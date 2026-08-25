@@ -60,20 +60,20 @@
       <h2 data-i18n="titulo_identificacao">Identificacao da avaliacao</h2>
       <form id="formIdentificacao">
         <label for="inputNomeEnsaio" data-i18n="hint_nome_ensaio">Nome do ensaio</label>
-        <input id="inputNomeEnsaio" type="text" list="trialHistoryList" autocomplete="off" required />
+        <input id="inputNomeEnsaio" class="input-uppercase" type="text" list="trialHistoryList" autocomplete="off" required />
         <datalist id="trialHistoryList"></datalist>
 
         <label id="lblDataAvaliacao" data-i18n="lbl_data_avaliacao_prefixo">Data da avaliacao:</label>
         <input id="inputDataAvaliacao" type="date" required />
 
         <label for="inputMomentoAvaliacao" data-i18n="lbl_qual_avaliacao">Referencia da avaliacao</label>
-        <input id="inputMomentoAvaliacao" type="text" data-i18n-placeholder="hint_momento_avaliacao" />
+        <input id="inputMomentoAvaliacao" class="input-uppercase" type="text" data-i18n-placeholder="hint_momento_avaliacao" />
 
         <label for="inputNumeroTratamentos" data-i18n="hint_numero_tratamentos">Numero de tratamentos</label>
-        <input id="inputNumeroTratamentos" type="number" min="1" step="1" required />
+        <input id="inputNumeroTratamentos" type="number" inputmode="numeric" pattern="[0-9]*" min="1" step="1" required />
 
         <label for="inputNumeroRepeticoes" data-i18n="hint_numero_repeticoes">Numero de repeticoes</label>
-        <input id="inputNumeroRepeticoes" type="number" min="1" step="1" required />
+        <input id="inputNumeroRepeticoes" type="number" inputmode="numeric" pattern="[0-9]*" min="1" step="1" required />
 
         <button type="button" id="btnAbrirHistoricoEnsaios" class="btn secondary" data-i18n="btn_ensaios_salvos">Ensaios salvos</button>
         <div id="historicoEnsaiosPanel" class="history-panel hidden"></div>
@@ -92,16 +92,16 @@
       <h2 data-i18n="titulo_config_avaliacao">Configuracao da avaliacao</h2>
       <form id="formConfig">
         <label for="inputTiposAvaliacao" data-i18n="hint_tipos_avaliacao">Tipos de avaliacao</label>
-        <input id="inputTiposAvaliacao" type="text" data-i18n-placeholder="hint_tipos_avaliacao" />
+        <input id="inputTiposAvaliacao" class="input-uppercase" type="text" data-i18n-placeholder="hint_tipos_avaliacao" />
 
         <label for="inputItemAvaliado" data-i18n="hint_item_avaliado">Item avaliado</label>
-        <input id="inputItemAvaliado" type="text" data-i18n-placeholder="hint_item_avaliado" />
+        <input id="inputItemAvaliado" class="input-uppercase" type="text" data-i18n-placeholder="hint_item_avaliado" />
 
         <label for="inputPestsAvaliadas" data-i18n="hint_pests_avaliadas">Pests avaliadas</label>
-        <input id="inputPestsAvaliadas" type="text" data-i18n-placeholder="hint_pests_avaliadas" />
+        <input id="inputPestsAvaliadas" class="input-uppercase" type="text" data-i18n-placeholder="hint_pests_avaliadas" />
 
         <label for="inputEscalaNotas" data-i18n="lbl_escala_notas">Escala de notas</label>
-        <input id="inputEscalaNotas" type="text" data-i18n-placeholder="hint_escala_notas" />
+        <input id="inputEscalaNotas" class="input-uppercase" type="text" data-i18n-placeholder="hint_escala_notas" />
 
         <div class="toggle-row">
           <input id="toggleUsarSubamostras" type="checkbox" />
@@ -110,7 +110,7 @@
 
         <div id="wrapperNumeroSubamostras" class="hidden">
           <label for="inputNumeroSubamostras" data-i18n="hint_numero_subamostras">Numero de subamostras</label>
-          <input id="inputNumeroSubamostras" type="number" min="1" step="1" />
+          <input id="inputNumeroSubamostras" type="number" inputmode="numeric" pattern="[0-9]*" min="1" step="1" />
         </div>
 
         <div class="row">

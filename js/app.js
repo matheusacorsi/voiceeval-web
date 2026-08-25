@@ -78,6 +78,21 @@ function registerServiceWorker() {
   }
 }
 
+// Normaliza campos .input-uppercase para MAIUSCULAS ja no valor (nao so visual), preservando o cursor.
+function initUppercaseInputs() {
+  document.addEventListener('input', (e) => {
+    const el = e.target;
+    if (!el.classList || !el.classList.contains('input-uppercase')) return;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    const up = el.value.toUpperCase();
+    if (up !== el.value) {
+      el.value = up;
+      try { el.setSelectionRange(start, end); } catch { /* alguns tipos nao suportam selectionRange */ }
+    }
+  });
+}
+
 function bootstrap() {
   initI18n();
 
@@ -90,6 +105,7 @@ function bootstrap() {
   const updateConnStatus = initConnectionStatus();
   initLangSelect(() => updateConnStatus());
   initInstallPrompt();
+  initUppercaseInputs();
   registerServiceWorker();
 
   const initial = (window.location.hash || '').replace('#', '') || 'inicio';

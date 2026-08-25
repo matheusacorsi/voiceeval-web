@@ -24,7 +24,17 @@ o "app shell" para uso offline, dados no navegador via IndexedDB.
 
 ## Funcionalidades implementadas
 
-### Transcrição de fala por áudio (Nuvem + Local) — `js/transcription.js`
+### Teclado numérico + normalização em MAIÚSCULAS nos campos — `index.html`, `css/styles.css`, `js/app.js`
+**O que:** "Número de tratamentos", "Número de repetições" e "Número de subamostras" abrem apenas o
+teclado numérico no celular (`type="number"` + `inputmode="numeric"` + `pattern="[0-9]*"`). Os demais
+campos de texto (nome do ensaio, referência, tipos de avaliação, item avaliado, pragas avaliadas,
+escala de notas) são normalizados para MAIÚSCULAS aceitando números e texto — a conversão é no
+**valor** salvo (não só visual), preservando a posição do cursor (`initUppercaseInputs` em app.js,
+classe `.input-uppercase`).
+**Por quê:** pedido do usuário — padroniza os dados de entrada para os outputs/normalização
+posterior e facilita a digitação numérica em campo.
+
+
 **O que:** cada trecho de áudio pode ser transcrito, com o idioma da fala escolhido pelo usuário
 (PT-BR / EN-US / ES-ES) e o modo selecionável na tela de Captura:
 - **Nuvem:** Web Speech API nativa (`SpeechRecognition`/`webkitSpeechRecognition`), ao vivo em

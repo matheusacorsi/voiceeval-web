@@ -101,6 +101,10 @@ input[type="date"] {
   font-size: 1rem;
 }
 
+.input-uppercase {
+  text-transform: uppercase;
+}
+
 .toggle-row {
   display: flex;
   align-items: center;
