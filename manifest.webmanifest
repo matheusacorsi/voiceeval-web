@@ -1,0 +1,26 @@
+{
+  "name": "VoiceEval Web",
+  "short_name": "VoiceEval",
+  "description": "Captura de audio e fotos para avaliacoes de campo, com fila offline e exportacao manual.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#cce7f6",
+  "theme_color": "#3860b2",
+  "lang": "pt-BR",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

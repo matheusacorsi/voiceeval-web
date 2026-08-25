@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#3860b2" />
+<meta name="description" content="Captura de audio e fotos para avaliacoes de campo, com fila offline e exportacao manual (sem dependencia de Azure/SharePoint)." />
+<title>VoiceEval Web</title>
+<link rel="manifest" href="./manifest.webmanifest" />
+<link rel="icon" href="./icons/icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="./icons/icon.svg" />
+<link rel="stylesheet" href="./css/styles.css" />
+</head>
+<body>
+
+<div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+<div id="confirmModal" class="modal-overlay hidden" role="alertdialog" aria-modal="true">
+  <div class="modal-box">
+    <p id="confirmModalMessage"></p>
+    <div class="row">
+      <button type="button" id="confirmModalCancel" class="btn secondary" data-i18n="btn_cancelar">Cancelar</button>
+      <button type="button" id="confirmModalOk" class="btn danger" data-i18n="btn_confirmar">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<header class="topbar">
+  <h1 id="appTitle" data-i18n="app_titulo">VoiceEval</h1>
+  <div class="topbar-actions">
+    <span id="connStatus">online</span>
+    <select id="langSelect" aria-label="idioma">
+      <option value="pt">PT</option>
+      <option value="en">EN</option>
+      <option value="es">ES</option>
+    </select>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- Tela: Inicio -->
+  <section id="screen-inicio" class="screen">
+    <div class="card">
+      <h2 data-i18n="titulo_inicio">VoiceEval PoC</h2>
+      <p id="homeMessage" class="muted"></p>
+      <button id="btnInstallApp" class="btn secondary hidden" data-i18n="btn_instalar_app">Instalar aplicativo</button>
+      <button id="btnIniciarAvaliacao" class="btn" data-i18n="btn_iniciar_avaliacao">Iniciar avaliacao de ensaio</button>
+      <button id="btnPendenciasOffline" class="btn secondary">
+        <span data-i18n="btn_transmissoes_pendentes">Transmissoes pendentes</span>
+        <span id="pendingCount" class="badge hidden">0</span>
+      </button>
+      <button id="btnLimparEnsaiosSalvos" class="btn secondary" data-i18n="btn_limpar_ensaios">Limpar ensaios salvos</button>
+    </div>
+  </section>
+
+  <!-- Tela: Identificacao -->
+  <section id="screen-identificacao" class="screen hidden">
+    <div class="card">
+      <h2 data-i18n="titulo_identificacao">Identificacao da avaliacao</h2>
+      <form id="formIdentificacao">
+        <label for="inputNomeEnsaio" data-i18n="hint_nome_ensaio">Nome do ensaio</label>
+        <input id="inputNomeEnsaio" type="text" list="trialHistoryList" autocomplete="off" required />
+        <datalist id="trialHistoryList"></datalist>
+
+        <label id="lblDataAvaliacao" data-i18n="lbl_data_avaliacao_prefixo">Data da avaliacao:</label>
+        <input id="inputDataAvaliacao" type="date" required />
+
+        <label for="inputMomentoAvaliacao" data-i18n="lbl_qual_avaliacao">Referencia da avaliacao</label>
+        <input id="inputMomentoAvaliacao" type="text" data-i18n-placeholder="hint_momento_avaliacao" />
+
+        <label for="inputNumeroTratamentos" data-i18n="hint_numero_tratamentos">Numero de tratamentos</label>
+        <input id="inputNumeroTratamentos" type="number" min="1" step="1" required />
+
+        <label for="inputNumeroRepeticoes" data-i18n="hint_numero_repeticoes">Numero de repeticoes</label>
+        <input id="inputNumeroRepeticoes" type="number" min="1" step="1" required />
+
+        <button type="button" id="btnAbrirHistoricoEnsaios" class="btn secondary" data-i18n="btn_ensaios_salvos">Ensaios salvos</button>
+        <div id="historicoEnsaiosPanel" class="history-panel hidden"></div>
+
+        <div class="row">
+          <button type="button" id="btnVoltarIdentificacao" class="btn secondary" data-i18n="btn_voltar">Voltar</button>
+          <button type="submit" id="btnProximoIdentificacao" class="btn" data-i18n="btn_proximo">Proximo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Tela: Config -->
+  <section id="screen-config" class="screen hidden">
+    <div class="card">
+      <h2 data-i18n="titulo_config_avaliacao">Configuracao da avaliacao</h2>
+      <form id="formConfig">
+        <label for="inputTiposAvaliacao" data-i18n="hint_tipos_avaliacao">Tipos de avaliacao</label>
+        <input id="inputTiposAvaliacao" type="text" data-i18n-placeholder="hint_tipos_avaliacao" />
+
+        <label for="inputItemAvaliado" data-i18n="hint_item_avaliado">Item avaliado</label>
+        <input id="inputItemAvaliado" type="text" data-i18n-placeholder="hint_item_avaliado" />
+
+        <label for="inputPestsAvaliadas" data-i18n="hint_pests_avaliadas">Pests avaliadas</label>
+        <input id="inputPestsAvaliadas" type="text" data-i18n-placeholder="hint_pests_avaliadas" />
+
+        <label for="inputEscalaNotas" data-i18n="lbl_escala_notas">Escala de notas</label>
+        <input id="inputEscalaNotas" type="text" data-i18n-placeholder="hint_escala_notas" />
+
+        <div class="toggle-row">
+          <input id="toggleUsarSubamostras" type="checkbox" />
+          <label for="toggleUsarSubamostras" style="margin:0" data-i18n="lbl_subamostras">Havera subamostras por parcela?</label>
+        </div>
+
+        <div id="wrapperNumeroSubamostras" class="hidden">
+          <label for="inputNumeroSubamostras" data-i18n="hint_numero_subamostras">Numero de subamostras</label>
+          <input id="inputNumeroSubamostras" type="number" min="1" step="1" />
+        </div>
+
+        <div class="row">
+          <button type="button" id="btnVoltarConfig" class="btn secondary" data-i18n="btn_voltar">Voltar</button>
+          <button type="submit" id="btnProximoConfig" class="btn" data-i18n="btn_proximo">Proximo</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Tela: Captura -->
+  <section id="screen-captura" class="screen hidden">
+    <div class="card">
+      <h2 data-i18n="titulo_captura">Captura da avaliacao</h2>
+      <p id="resumoCaptura" class="muted"></p>
+
+      <div class="transcription-controls">
+        <div class="field">
+          <label for="selIdiomaFala" data-i18n="lbl_idioma_fala">Idioma da fala</label>
+          <select id="selIdiomaFala">
+            <option value="pt-BR" data-i18n="lbl_idioma_pt">Português</option>
+            <option value="en-US" data-i18n="lbl_idioma_en">Inglês</option>
+            <option value="es-ES" data-i18n="lbl_idioma_es">Espanhol</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="selModoTranscricao" data-i18n="lbl_modo_transcricao">Transcrição</label>
+          <select id="selModoTranscricao">
+            <option value="nuvem" data-i18n="modo_transcricao_nuvem">Nuvem</option>
+            <option value="local" data-i18n="modo_transcricao_local">No dispositivo</option>
+            <option value="desativada" data-i18n="modo_transcricao_desativada">Desativada</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="mic-wrap">
+        <button id="micButton" class="mic-button" aria-label="microfone">&#127908;</button>
+        <p id="statusGravacao" class="status-text" data-i18n="status_audio_inicio">Toque no microfone para iniciar a gravacao.</p>
+        <button type="button" id="btnConcluirTrecho" class="btn secondary hidden" data-i18n="btn_concluir_trecho">Concluir trecho de audio</button>
+      </div>
+
+      <div class="counters">
+        <span><span data-i18n="lbl_trechos_audio">Trechos de audio:</span> <span id="contadorAudios">0</span></span>
+        <span><span data-i18n="lbl_fotos">Fotos:</span> <span id="contadorFotos">0</span></span>
+      </div>
+      <p id="statusTranscricao" class="status-transcricao hidden"></p>
+      <ul id="audioList" class="list"></ul>
+
+      <button type="button" id="btnTirarFoto" class="btn secondary" data-i18n="btn_tirar_foto">Tirar foto</button>
+      <button type="button" id="btnRemoverUltimaFoto" class="btn secondary hidden" data-i18n="btn_remover_ultima_foto">Remover ultima foto</button>
+
+      <button type="button" id="btnFinalizarAvaliacao" class="btn" data-i18n="btn_finalizar_avaliacao">Finalizar avaliacao</button>
+      <button type="button" id="btnTransmitirAvaliacao" class="btn hidden" data-i18n="btn_transmitir_avaliacao">Transmitir avaliacao</button>
+      <button type="button" id="btnSalvarAvaliacaoOffline" class="btn secondary" data-i18n="btn_salvar_offline">Salvar avaliacao offline</button>
+      <button type="button" id="btnVoltarCaptura" class="btn secondary" data-i18n="btn_voltar">Voltar</button>
+    </div>
+  </section>
+
+  <!-- Tela: Pendencias -->
+  <section id="screen-pendencias" class="screen hidden">
+    <div class="card">
+      <h2 data-i18n="titulo_pendencias">Transmissoes pendentes</h2>
+      <button type="button" id="btnAtualizarLista" class="btn secondary" data-i18n="btn_atualizar_lista">Atualizar lista</button>
+      <ul id="pendenciasList" class="list"></ul>
+      <p id="lblPendenciaSelecionada" class="muted"></p>
+      <button type="button" id="btnTransmitirPendenciaSelecionada" class="btn" disabled data-i18n="btn_transmitir_pendencia">Transmitir pendencia selecionada</button>
+      <button type="button" id="btnTransmitirTodasPendencias" class="btn secondary" data-i18n="btn_transmitir_todas">Transmitir todas</button>
+      <button type="button" id="btnVoltarInicioPendencias" class="btn secondary" data-i18n="btn_voltar">Voltar</button>
+    </div>
+  </section>
+
+</main>
+
+<script type="module" src="./js/app.js"></script>
+</body>
+</html>
