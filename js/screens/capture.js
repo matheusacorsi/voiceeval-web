@@ -243,6 +243,7 @@ export function initCaptureScreen(navigateFn) {
   btnTirarFoto.addEventListener('click', async () => {
     // Auto-conclui o trecho atual antes de abrir a camera: captura o rotulo falado (ex.: "foto
     // parcela 101") e evita o conflito de microfone/camera no celular.
+    const estavaGravando = recorder.state === 'recording';
     await finishCurrentClip();
     try {
       const foto = await capturePhoto();
@@ -250,6 +251,15 @@ export function initCaptureScreen(navigateFn) {
       renderFotoCounter();
     } catch {
       /* usuario cancelou a captura, nada a fazer */
+    }
+    // Retoma a gravacao automaticamente se estava gravando antes, para nao precisar tocar no mic de novo.
+    if (estavaGravando) {
+      try {
+        await recorder.start();
+        startCloudIfNeeded();
+      } catch {
+        toast(t('msg_erro_microfone'));
+      }
     }
   });
 
