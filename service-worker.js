@@ -1,11 +1,13 @@
-const CACHE_VERSION = 'voiceeval-v5';
+const CACHE_VERSION = 'voiceeval-v6';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/styles.css',
-  './icons/icon.svg',
-  './icons/icon-maskable.svg',
+  './icons/icon-192.png',
+  './icons/icon-512.png',
+  './icons/icon-180.png',
+  './icons/icon-maskable-512.png',
   './js/app.js',
   './js/i18n.js',
   './js/utils.js',
