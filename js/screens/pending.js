@@ -1,8 +1,7 @@
 import { qs, toast } from '../utils.js';
-import { t } from '../i18n.js';
+import { t, getLang } from '../i18n.js';
 import { getAllPendingEvaluations, getMediaFilesBySession, deletePendingEvaluation, deleteMediaFilesBySession } from '../db.js';
-import { buildZipEntries, buildZipFileName } from '../summary.js';
-import { createZipBlob } from '../zip.js';
+import { buildDeliveryFiles } from '../summary.js';
 import { exportFiles } from '../sync.js';
 
 const btnAtualizar = qs('#btnAtualizarLista');
@@ -40,11 +39,10 @@ async function reload() {
 
 async function buildFilesForEvaluation(evaluation) {
   const media = await getMediaFilesBySession(evaluation.sessionId);
-  const audios = media.filter((m) => m.tipo === 'audio').map((m) => ({ blob: m.blob, mime: m.mime, indice: m.indice, duracaoS: m.meta?.duracaoS, bytes: m.meta?.bytes, transcript: m.meta?.transcript || '', transcricaoStatus: m.meta?.transcricaoStatus || 'desativada' }));
-  const fotos = media.filter((m) => m.tipo === 'foto').map((m) => ({ blob: m.blob, mime: m.mime, indice: m.indice, timestamp: m.meta?.timestamp, audioAnteriorIndice: m.meta?.audioAnteriorIndice || null }));
-  const entries = buildZipEntries(evaluation, audios, fotos, evaluation.resumoMD);
-  const blob = await createZipBlob(entries);
-  return [{ name: buildZipFileName(evaluation), blob }];
+  const audios = media.filter((m) => m.tipo === 'audio').map((m) => ({ id: m.id, blob: m.blob, mime: m.mime, indice: m.indice, duracaoS: m.meta?.duracaoS, bytes: m.meta?.bytes, transcript: m.meta?.transcript || '', transcricaoStatus: m.meta?.transcricaoStatus || 'desativada' }));
+  const fotos = media.filter((m) => m.tipo === 'foto').map((m) => ({ id: m.id, blob: m.blob, mime: m.mime, indice: m.indice, timestamp: m.meta?.timestamp, audioAnteriorId: m.meta?.audioAnteriorId || null, audioAnteriorIndice: m.meta?.audioAnteriorIndice || null }));
+  // Pacote completo, incluindo o Excel gerado automaticamente das transcricoes salvas.
+  return buildDeliveryFiles(evaluation, audios, fotos, { language: getLang() });
 }
 
 async function transmitEvaluation(evaluation) {

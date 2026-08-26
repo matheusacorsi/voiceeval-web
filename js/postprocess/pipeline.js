@@ -30,3 +30,14 @@ export async function runPipeline(rawText, options = {}) {
 export async function runPipelineFromAudios(audios, options = {}) {
   return runPipeline(joinTranscripts(audios), options);
 }
+
+// Deriva as opcoes de subamostra a partir da configuracao da avaliacao (usada pela revisao e pela
+// geracao automatica do Excel na transmissao).
+export function subsampleOptionsFromSession(session) {
+  const n = parseInt(session && session.numeroSubamostras, 10);
+  const subsamples = session && session.usarSubamostras && n > 0 ? n : 0;
+  const src = String((session && (session.pestsAvaliadasTexto || session.itemAvaliado)) || '').trim();
+  const firstToken = src.split(/[,;/]/)[0].trim().split(/\s+/)[0];
+  const defaultItem = (firstToken || 'NOTA').toUpperCase();
+  return { subsamples, defaultItem };
+}

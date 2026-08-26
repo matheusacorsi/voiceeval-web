@@ -5,6 +5,31 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Excel dentro do pacote de entrega (não é mais produto separado) — feito
+
+Antes: "Exportar Excel" gerava só o `.xlsx` solto e "Transmitir" mandava o ZIP sem o Excel.
+Agora o **Excel faz parte do pacote único de entrega**, dentro da pasta `<ensaio>_<data>_<momento>/`
+junto de `MD/resumo.md`, `Transcricao/transcricao.txt`, `Audios/`, `Fotos/`.
+
+- `js/summary.js`: `buildZipEntries(..., extraFiles)` recebe arquivos extra (o Excel vai na raiz da
+  pasta). Novos `buildEvaluationXlsx(evaluation, audios, {tabelaFinal?, columns?, language})` (usa a
+  tabela revisada se vier, senão roda o pipeline = Excel automático) e `buildDeliveryFiles(...)` que
+  monta o **ZIP completo com o Excel dentro**.
+- Três caminhos de transmissão agora incluem o Excel:
+  1. **Revisão → "Exportar e transmitir tudo"**: usa a tabela editada, empacota tudo, transmite,
+     limpa a pendência e volta ao início (conclui a entrega).
+  2. **Captura → "Transmitir avaliação"** (sem revisar): Excel gerado automático das transcrições.
+  3. **Pendências → transmitir** (avaliação salva offline): idem, Excel automático; agora reconstrói
+     `id`/`audioAnteriorId` da mídia salva para o renomeio de fotos por parcela funcionar também aqui.
+- `js/postprocess/pipeline.js`: `subsampleOptionsFromSession(session)` compartilhado (revisão + Excel
+  automático). Rótulos: botão da captura "Revisar dados e exportar"; botão da revisão "Exportar e
+  transmitir tudo". `service-worker.js` → `voiceeval-v12`.
+- Validação em navegador ficou pendente nesta sessão (ferramenta de browser travou); mudança é
+  composição de peças já validadas (exportEvaluationXlsx via openpyxl, buildZipEntries/createZipBlob
+  já usados na transmissão atual).
+
+---
+
 ## Correção por voz — feito e validado
 
 O parser reconhece comandos de correção ditos durante a narração e **sobrescreve valores já ditos**,

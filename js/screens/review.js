@@ -1,9 +1,10 @@
 import { qs, toast } from '../utils.js';
 import { t, getLang } from '../i18n.js';
-import { session } from '../state.js';
-import { runPipeline, joinTranscripts } from '../postprocess/pipeline.js';
-import { exportEvaluationXlsx } from '../postprocess/xlsx.js';
+import { session, resetSession } from '../state.js';
+import { runPipeline, joinTranscripts, subsampleOptionsFromSession } from '../postprocess/pipeline.js';
 import { buildPhotoNames } from '../postprocess/photos.js';
+import { buildDeliveryFiles } from '../summary.js';
+import { deletePendingEvaluation, deleteMediaFilesBySession } from '../db.js';
 import { exportFiles } from '../sync.js';
 
 const revisaoResumo = qs('#revisaoResumo');
@@ -154,26 +155,24 @@ function buildTabelaFinal() {
   });
 }
 
-async function exportarExcel() {
-  if (model.rows.length === 0) {
-    toast(t('msg_revisao_sem_dados'));
-    return;
-  }
+// Exporta o PACOTE COMPLETO (resumo + transcricao + audios + fotos + Excel revisado) num unico ZIP
+// e transmite. Depois limpa a pendencia e volta ao inicio (mesma conclusao da transmissao direta).
+async function exportarPacote() {
   const tabelaFinal = buildTabelaFinal();
   const columns = ['Parcela', ...model.columns];
-  const meta = {
-    ensaio: session.nomeEnsaio,
-    data: session.dataAvaliacao,
-    refFotos: session.momentoAvaliacao,
-    language: getLang()
-  };
-  const { blob, fileName } = await exportEvaluationXlsx({ tabelaFinal, columns, plants: null, meta });
+  const files = await buildDeliveryFiles(session, session.audios, session.fotos, { tabelaFinal, columns, language: getLang() });
   try {
-    await exportFiles([{ name: fileName, blob }]);
-    toast(t('msg_excel_exportado'));
+    await exportFiles(files);
   } catch (err) {
-    if (!(err && err.name === 'AbortError')) toast(t('msg_erro_camera'));
+    if (err && err.name === 'AbortError') return; // usuario cancelou o compartilhamento
+    toast(t('msg_erro_camera'));
+    return;
   }
+  await deletePendingEvaluation(session.sessionId);
+  await deleteMediaFilesBySession(session.sessionId);
+  toast(t('msg_transmissao_sucesso'));
+  resetSession();
+  navigate('inicio');
 }
 
 export function initReviewScreen(navigateFn) {
@@ -182,25 +181,16 @@ export function initReviewScreen(navigateFn) {
   tabela.addEventListener('click', onTableClick);
   btnAddLinha.addEventListener('click', addRow);
   btnAddColuna.addEventListener('click', addColumn);
-  btnExportar.addEventListener('click', exportarExcel);
+  btnExportar.addEventListener('click', exportarPacote);
   btnVoltar.addEventListener('click', () => navigate('captura'));
 }
 
 // Deriva as opcoes de subamostra a partir da configuracao da avaliacao.
-function subsampleOptions() {
-  const n = parseInt(session.numeroSubamostras, 10);
-  const subsamples = session.usarSubamostras && n > 0 ? n : 0;
-  const src = String(session.pestsAvaliadasTexto || session.itemAvaliado || '').trim();
-  const firstToken = src.split(/[,;/]/)[0].trim().split(/\s+/)[0];
-  const defaultItem = (firstToken || 'NOTA').toUpperCase();
-  return { subsamples, defaultItem };
-}
-
 export async function onEnterReview() {
   revisaoResumo.textContent = `${session.nomeEnsaio} ${session.momentoAvaliacao ? '· ' + session.momentoAvaliacao : ''}`;
   const raw = joinTranscripts(session.audios);
   transcricaoTexto.textContent = raw || '—';
-  const parsed = await runPipeline(raw, subsampleOptions());
+  const parsed = await runPipeline(raw, subsampleOptionsFromSession(session));
   model = modelFromParsed(parsed);
   renderTable();
   renderPhotos();

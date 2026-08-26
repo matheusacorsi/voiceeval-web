@@ -1,5 +1,8 @@
 import { slugify, formatDuration, formatBytes } from './utils.js';
 import { buildPhotoNameMap } from './postprocess/photos.js';
+import { runPipeline, joinTranscripts, subsampleOptionsFromSession } from './postprocess/pipeline.js';
+import { exportEvaluationXlsx } from './postprocess/xlsx.js';
+import { createZipBlob } from './zip.js';
 
 export function buildZipFolderName(evaluation) {
   const trial = slugify(evaluation.nomeEnsaio);
@@ -121,7 +124,7 @@ export function buildTranscricaoTxt(evaluation, audios, fotos) {
  * <ensaio>_<data>_<momento>/MD/resumo.md, /Transcricao/transcricao.txt, /Audios/*, /Fotos/*
  * @returns {{name:string, blob:Blob}[]}
  */
-export function buildZipEntries(evaluation, audios, fotos, resumoMD) {
+export function buildZipEntries(evaluation, audios, fotos, resumoMD, extraFiles = []) {
   const folder = buildZipFolderName(evaluation);
   const entries = [
     { name: `${folder}/MD/resumo.md`, blob: new Blob([resumoMD], { type: 'text/markdown' }) },
@@ -130,5 +133,28 @@ export function buildZipEntries(evaluation, audios, fotos, resumoMD) {
   audios.forEach((a) => entries.push({ name: `${folder}/Audios/${buildAudioFileName(a)}`, blob: a.blob }));
   const photoNames = buildPhotoNameMap(audios, fotos);
   fotos.forEach((f) => entries.push({ name: `${folder}/Fotos/${photoNames.get(f.id) || buildPhotoFileName(f)}`, blob: f.blob }));
+  // Excel (e qualquer outro arquivo) vai na raiz da pasta do ensaio, junto do pacote de entrega.
+  extraFiles.forEach((ef) => entries.push({ name: `${folder}/${ef.name}`, blob: ef.blob }));
   return entries;
+}
+
+// Gera o .xlsx da avaliacao. Se {tabelaFinal, columns} vierem (revisao editada), usa-os;
+// senao roda o pipeline sobre as transcricoes (Excel automatico, sem revisao).
+export async function buildEvaluationXlsx(evaluation, audios, { tabelaFinal, columns, language = 'pt' } = {}) {
+  if (!tabelaFinal) {
+    const parsed = await runPipeline(joinTranscripts(audios), subsampleOptionsFromSession(evaluation));
+    tabelaFinal = parsed.tabela_final;
+    columns = parsed.columns;
+  }
+  const meta = { ensaio: evaluation.nomeEnsaio, data: evaluation.dataAvaliacao, refFotos: evaluation.momentoAvaliacao, language };
+  return exportEvaluationXlsx({ tabelaFinal, columns, plants: null, meta });
+}
+
+// Monta o pacote de entrega COMPLETO (resumo + transcricao + audios + fotos + Excel) num unico ZIP.
+export async function buildDeliveryFiles(evaluation, audios, fotos, { tabelaFinal, columns, language = 'pt' } = {}) {
+  const resumoMD = evaluation.resumoMD || buildResumoMarkdown(evaluation, audios, fotos);
+  const xlsx = await buildEvaluationXlsx(evaluation, audios, { tabelaFinal, columns, language });
+  const entries = buildZipEntries(evaluation, audios, fotos, resumoMD, [{ name: xlsx.fileName, blob: xlsx.blob }]);
+  const blob = await createZipBlob(entries);
+  return [{ name: buildZipFileName(evaluation), blob }];
 }

@@ -4,8 +4,7 @@ import { session, addAudio, removeAudio, addFoto, removeFoto, resetSession } fro
 import { AudioRecorderController } from '../recorder.js';
 import { capturePhoto } from '../photo.js';
 import { savePendingEvaluation, saveMediaFile, saveTrialHistory, deletePendingEvaluation, deleteMediaFilesBySession, getSetting, setSetting } from '../db.js';
-import { buildResumoMarkdown, buildZipEntries, buildZipFileName } from '../summary.js';
-import { createZipBlob } from '../zip.js';
+import { buildResumoMarkdown, buildDeliveryFiles } from '../summary.js';
 import { exportFiles } from '../sync.js';
 import { CloudTranscriber, LocalTranscriber, getTranscriptionCapabilities, mapUiLangToSpeech } from '../transcription.js';
 
@@ -197,10 +196,8 @@ async function persistEvaluation() {
 }
 
 async function buildExportZip() {
-  const resumoMD = session.resumoMD || buildResumoMarkdown(session, session.audios, session.fotos);
-  const entries = buildZipEntries(session, session.audios, session.fotos, resumoMD);
-  const blob = await createZipBlob(entries);
-  return [{ name: buildZipFileName(session), blob }];
+  // Pacote completo, incluindo o Excel gerado automaticamente das transcricoes (sem revisao).
+  return buildDeliveryFiles(session, session.audios, session.fotos, { language: getLang() });
 }
 
 export function initCaptureScreen(navigateFn) {
