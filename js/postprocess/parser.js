@@ -36,6 +36,21 @@ const SUBSAMPLE_MARKERS = new Set([
   'subamostra', 'subamostras', 'submuestra', 'submuestras', 'subsample', 'subsamples'
 ]);
 
+// Verbos de correcao por voz (PT/ES/EN). Uma correcao sobrescreve um valor ja dito.
+const CORRECTION_VERBS = new Set([
+  'corrigir', 'corrige', 'corrija', 'corrigido', 'correcao', 'correccion',
+  'substituir', 'trocar', 'mudar', 'alterar', 'ajustar', 'atualizar',
+  'corregir', 'sustituir', 'cambiar', 'modificar', 'actualizar',
+  'correct', 'fix', 'change', 'replace', 'update'
+]);
+
+// Palavras de ligacao/resultado ignoradas dentro da clausula de correcao
+// ("<item> fica/deve ser/passa a ser/is/becomes/should be <valor>").
+const CORRECTION_SKIP = new Set([
+  'fica', 'deve', 'ser', 'passa', 'queda', 'pasa', 'debe', 'is', 'becomes', 'should', 'be',
+  'considerar', 'como', 'colocar', 'poner', 'put', 'a', 'to', 'pra', 'em', 'al'
+]);
+
 function isNumberNorm(norm) {
   return /^-?\d+(?:[.,]\d+)?$/.test(norm);
 }
@@ -62,6 +77,47 @@ export function extractParcelaFromText(text) {
     if (j < tokens.length && /^\d+$/.test(tokens[j])) { last = parseInt(tokens[j], 10); i = j; }
   }
   return last;
+}
+
+// Interpreta uma clausula de correcao a partir do verbo (tokens[i]):
+// "<verbo> [parcela P] <ITEM|tudo> [para/a/to/fica...] <valor>". Para no 1o par (alvo, valor).
+function parseCorrectionClause(tokens, i, currentParcela) {
+  let j = i + 1;
+  const maxJ = Math.min(tokens.length, i + 12);
+  let targetParcela = currentParcela;
+  let targetItem = null; // codigo do item ou '__ALL__'
+  let value = null;
+
+  while (j < maxJ) {
+    const nt = tokens[j].norm;
+    if (nt === '') { j++; continue; }
+    if (CORRECTION_VERBS.has(nt)) break; // novo comando de correcao (nao consome)
+
+    if (PARCEL_KEYWORDS.has(nt)) {
+      let k = j + 1;
+      while (k < tokens.length && (BRIDGE_WORDS.has(tokens[k].norm) || PARCEL_KEYWORDS.has(tokens[k].norm))) k++;
+      if (targetItem == null && value == null && k < tokens.length && /^\d+$/.test(tokens[k].norm)) {
+        targetParcela = parseInt(tokens[k].norm, 10);
+        j = k + 1;
+        continue;
+      }
+      break; // proxima parcela inicia novo bloco (nao consome)
+    }
+
+    if (ALL_TARGET_WORDS.has(nt)) { targetItem = '__ALL__'; j++; if (value != null) break; continue; }
+
+    let v = null;
+    if (isNumberNorm(nt)) v = numValue(nt);
+    else { const sp = spokenToNumber(nt); if (sp != null) v = sp; }
+    if (v != null) { value = v; j++; if (targetItem != null) break; continue; }
+
+    if (FILLER_WORDS.has(nt) || BRIDGE_WORDS.has(nt) || CORRECTION_SKIP.has(nt)) { j++; continue; }
+
+    if (targetItem == null) targetItem = tokens[j].raw.replace(/\.+$/, '').toUpperCase();
+    j++;
+    if (targetItem != null && value != null) break;
+  }
+  return { targetParcela, targetItem, value, endIndex: j };
 }
 
 /**
@@ -104,6 +160,23 @@ export function parseTranscript(text, options = {}) {
         slotCounter = 0;
         pendingSlot = null;
         i = j + 1;
+        continue;
+      }
+      i++;
+      continue;
+    }
+
+    // Correcao por voz: "corrigir <ITEM|tudo> para <valor>" — sobrescreve valor(es) ja ditos.
+    if (CORRECTION_VERBS.has(t.norm)) {
+      const c = parseCorrectionClause(tokens, i, currentParcela);
+      if (c.value != null && c.targetParcela != null && c.targetItem != null && rows.has(c.targetParcela)) {
+        const row = rows.get(c.targetParcela);
+        if (c.targetItem === '__ALL__') {
+          for (const col of columns) row[col] = c.value;
+        } else if (columns.includes(c.targetItem)) {
+          row[c.targetItem] = c.value;
+        }
+        i = c.endIndex;
         continue;
       }
       i++;

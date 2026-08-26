@@ -5,6 +5,24 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Correção por voz — feito e validado
+
+O parser reconhece comandos de correção ditos durante a narração e **sobrescreve valores já ditos**,
+sem nenhuma configuração extra (funciona automático dentro de `parseTranscript`):
+- Gramática: `<verbo> [parcela P] <ITEM|tudo> [para/a/to/fica/is…] <valor>`.
+- Verbos PT/ES/EN: `corrigir/corrige/substituir/trocar/mudar/alterar/ajustar`, `corregir/sustituir/
+  cambiar/modificar`, `correct/fix/change/replace/update`. Aceita frases de resultado (`fica`,
+  `deve ser`, `is`, `becomes`, `should be`).
+- Alvo: um item específico (só sobrescreve coluna já existente — nunca cria coluna nova) ou `tudo/
+  todo/all` (todas as colunas da parcela, inclusive subamostras `_S0N`).
+- Parcela: a atual por padrão, ou uma explícita (`corrigir parcela 101 …`).
+- A cláusula para no 1º par (alvo, valor) e não vaza para os dados seguintes.
+- **Validação:** 12 casos no parser (PT/ES/EN, tudo, parcela explícita, sem-vazar, item inexistente,
+  subamostra, 2 correções, regressão) + teste ponta a ponta no app (`corrigir parcela 101 ELEIN para
+  30` → só 101; `corrigir tudo para zero` → parcela atual). `service-worker.js` → `voiceeval-v10`.
+
+---
+
 ## Subamostras + Renomeio de fotos por parcela — feito e validado
 
 **Subamostras (Davis + genérica):** quando a avaliação está configurada com "Haverá subamostras por
