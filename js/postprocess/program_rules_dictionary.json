@@ -1,0 +1,1219 @@
+{
+  "schema_version": 1,
+  "dictionary_name": "2voice_eval_program_rules",
+  "updated_at": "2026-07-27T18:47:25Z",
+  "term_aliases": {
+    "PARCELA": [
+      "parcela",
+      "parcelas",
+      "parcola",
+      "parcala",
+      "parsela",
+      "parcella",
+      "parcelle",
+      "parcele",
+      "parcera",
+      "parrocela",
+      "par cella",
+      "par cela",
+      "par sela"
+    ],
+    "ELEIN": [
+      "elein",
+      "elen",
+      "ele in",
+      "eleim",
+      "elin"
+    ],
+    "ERISS": [
+      "eriss",
+      "eris",
+      "er is"
+    ],
+    "TRCIN": [
+      "trcin",
+      "tr sim",
+      "trsim",
+      "tr cin",
+      "tr sin",
+      "tricin"
+    ],
+    "DIGIN": [
+      "digin",
+      "digi in",
+      "digim",
+      "dijin"
+    ],
+    "ISCRU": [
+      "iscru",
+      "is cru",
+      "ischaemum rugosum"
+    ],
+    "ECHCO": [
+      "echco",
+      "eco",
+      "econ",
+      "echinochloa colona",
+      "capim arroz",
+      "capim colonia de arroz",
+      "capon",
+      "hualcacho",
+      "paja de arroz"
+    ],
+    "PHYGSP": [
+      "filofaga",
+      "filo faga",
+      "filofago"
+    ],
+    "PE_GALINHA": [
+      "pe de galinha",
+      "pe-de-galinha",
+      "capim pe de galinha",
+      "capim-pe-de-galinha"
+    ],
+    "AMARGOSO": [
+      "amargoso",
+      "amagoso",
+      "amargozo",
+      "amagroso",
+      "capim amargoso",
+      "capim-amargoso"
+    ],
+    "BUVA": [
+      "buva",
+      "bulva",
+      "pulva",
+      "buwa",
+      "buba",
+      "bupa",
+      "bufa"
+    ],
+    "CONYZA": [
+      "conyza",
+      "conisa",
+      "con isa",
+      "coniza",
+      "conysa",
+      "conissa"
+    ],
+    "EPILOBIUM": [
+      "epilobium",
+      "bilobium",
+      "epylobium",
+      "epilovium",
+      "epilobio",
+      "epylobio"
+    ],
+    "FITOTOXICIDADE": [
+      "fito",
+      "fitotox",
+      "fitotoxidad",
+      "fitotoxicida",
+      "fitotocicidad",
+      "fitotocsidad",
+      "fitotoxisidad",
+      "fitotoxicidade",
+      "fitotoxicidade da cultura",
+      "injuria",
+      "injuria da cultura",
+      "dano na cultura",
+      "fitotoxicidad",
+      "fitotoxicidad del cultivo",
+      "injuria del cultivo",
+      "dano al cultivo",
+      "dano en el cultivo"
+    ],
+    "AGROYP": [
+      "gusano cortador",
+      "lagarta rosca",
+      "trozador"
+    ],
+    "BEMITA": [
+      "mosca blanca",
+      "mosca branca",
+      "mosquita blanca"
+    ],
+    "DALBMA": [
+      "chicharrita del maiz",
+      "cigarrinha do milho",
+      "saltahojas del maiz"
+    ],
+    "DIATSA": [
+      "barrenador de la cana",
+      "broca da cana de acucar"
+    ],
+    "DICLME": [
+      "chinche barriga verde",
+      "percevejo barriga verde"
+    ],
+    "ELASLI": [
+      "barrenador menor",
+      "lagarta elasmo"
+    ],
+    "EUSCHE": [
+      "chinche marron",
+      "percevejo marrom"
+    ],
+    "FRANOC": [
+      "tripes",
+      "trips",
+      "trips occidental de las flores"
+    ],
+    "HELIAR": [
+      "gusano bellotero",
+      "lagarta armigera",
+      "oruga bolillera"
+    ],
+    "HELIZE": [
+      "gusano elotero",
+      "lagarta da espiga",
+      "oruga de la espiga"
+    ],
+    "LAPHFR": [
+      "cogollero",
+      "gusano cogollero",
+      "lagarta do cartucho",
+      "lagarta militar"
+    ],
+    "MYZUPE": [
+      "pulgao verde",
+      "pulgon verde"
+    ],
+    "PRODER": [
+      "lagarta das vagens",
+      "oruga militar del sur"
+    ],
+    "PSEPIN": [
+      "falsa medidora",
+      "falso medidor"
+    ],
+    "RACHNU": [
+      "oruga medidora",
+      "lagarta falsa medideira"
+    ],
+    "SPODCO": [
+      "lagarta preta da soja",
+      "oruga militar negra"
+    ],
+    "THEMGE": [
+      "lagarta da soja",
+      "isoca de la soja",
+      "gusano terciopelo"
+    ],
+    "TUTABS": [
+      "traca do tomateiro",
+      "polilla del tomate",
+      "palomilla del tomate"
+    ],
+    "HETDGL": [
+      "nematoide de cisto da soja",
+      "nematodo del quiste de la soja"
+    ],
+    "MELGIN": [
+      "nematoide das galhas",
+      "nematodo agallador"
+    ],
+    "MELGJA": [
+      "nematodo agallador javanes"
+    ],
+    "PRATBR": [
+      "nematoide das lesoes radiculares",
+      "nematodo de las lesiones",
+      "nematodo lesionador"
+    ],
+    "ROTYRE": [
+      "nematoide reniforme",
+      "nematodo reniforme"
+    ]
+  },
+  "multilingual_terms": [
+    {
+      "canonical": "BUVA",
+      "nome_pt": "buva",
+      "nome_es": "buva",
+      "nome_en": "hairy fleabane",
+      "scientific_name": "Conyza spp.",
+      "category": "planta_daninha",
+      "eppo": "CONSS",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "buwa",
+        "buba",
+        "bupa"
+      ]
+    },
+    {
+      "canonical": "CONYZA",
+      "nome_pt": "conyza",
+      "nome_es": "rama negra",
+      "nome_en": "hairy fleabane",
+      "scientific_name": "Conyza bonariensis",
+      "category": "planta_daninha",
+      "eppo": "ERIBO",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "conisa",
+        "coniza",
+        "conysa"
+      ]
+    },
+    {
+      "canonical": "AMARGOSO",
+      "nome_pt": "capim-amargoso",
+      "nome_es": "sorgo de alepo",
+      "nome_en": "johnsongrass",
+      "scientific_name": "Digitaria insularis",
+      "category": "planta_daninha",
+      "eppo": "DIGIN",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "amargoso",
+        "amagoso",
+        "amargozo"
+      ]
+    },
+    {
+      "canonical": "ISCRU",
+      "nome_pt": "iscru",
+      "nome_es": "iscru",
+      "nome_en": "wrinkleleaf ricegrass",
+      "scientific_name": "Ischaemum rugosum",
+      "category": "planta_daninha",
+      "eppo": "ISCRU",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "is cru"
+      ]
+    },
+    {
+      "canonical": "ECHCO",
+      "nome_pt": "capim-arroz",
+      "nome_es": "hualcacho",
+      "nome_en": "jungle rice",
+      "scientific_name": "Echinochloa colona",
+      "category": "planta_daninha",
+      "eppo": "ECHCO",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "eco",
+        "econ",
+        "capon",
+        "paja de arroz"
+      ]
+    },
+    {
+      "canonical": "PHYGSP",
+      "nome_pt": "filofaga",
+      "nome_es": "filofaga",
+      "nome_en": "phyllophaga larvae",
+      "scientific_name": "Phyllophaga sp.",
+      "category": "praga",
+      "eppo": "",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "filo faga",
+        "filofago"
+      ]
+    },
+    {
+      "canonical": "FITOTOXICIDADE",
+      "nome_pt": "fitotoxicidade",
+      "nome_es": "fitotoxicidad",
+      "nome_en": "crop injury",
+      "scientific_name": "crop phytotoxicity",
+      "category": "avaliacao_cultura",
+      "eppo": "",
+      "status": "active",
+      "priority": 9,
+      "aliases": [
+        "injuria",
+        "dano na cultura",
+        "fitotox"
+      ]
+    },
+    {
+      "canonical": "AGROYP",
+      "nome_pt": "lagarta-rosca",
+      "nome_es": "gusano cortador",
+      "nome_en": "black cutworm",
+      "scientific_name": "Agrotis ipsilon",
+      "category": "praga",
+      "eppo": "AGROYP",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "gusano cortador",
+        "lagarta rosca",
+        "trozador"
+      ]
+    },
+    {
+      "canonical": "BEMITA",
+      "nome_pt": "mosca-branca",
+      "nome_es": "mosca blanca",
+      "nome_en": "whitefly",
+      "scientific_name": "Bemisia tabaci",
+      "category": "praga",
+      "eppo": "BEMITA",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "mosca blanca",
+        "mosca branca",
+        "mosquita blanca"
+      ]
+    },
+    {
+      "canonical": "DALBMA",
+      "nome_pt": "cigarrinha-do-milho",
+      "nome_es": "chicharrita del maiz",
+      "nome_en": "corn leafhopper",
+      "scientific_name": "Dalbulus maidis",
+      "category": "praga",
+      "eppo": "DALBMA",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "chicharrita del maiz",
+        "cigarrinha do milho",
+        "saltahojas del maiz"
+      ]
+    },
+    {
+      "canonical": "DIATSA",
+      "nome_pt": "broca-da-cana-de-acucar",
+      "nome_es": "barrenador de la cana",
+      "nome_en": "sugarcane borer",
+      "scientific_name": "Diatraea saccharalis",
+      "category": "praga",
+      "eppo": "DIATSA",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "barrenador de la cana",
+        "broca da cana de acucar"
+      ]
+    },
+    {
+      "canonical": "DICLME",
+      "nome_pt": "percevejo-barriga-verde",
+      "nome_es": "chinche barriga verde",
+      "nome_en": "green belly stink bug",
+      "scientific_name": "Dichelops melacanthus",
+      "category": "praga",
+      "eppo": "DICLME",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "chinche barriga verde",
+        "percevejo barriga verde"
+      ]
+    },
+    {
+      "canonical": "ELASLI",
+      "nome_pt": "lagarta-elasmo",
+      "nome_es": "barrenador menor",
+      "nome_en": "lesser cornstalk borer",
+      "scientific_name": "Elasmopalpus lignosellus",
+      "category": "praga",
+      "eppo": "ELASLI",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "barrenador menor",
+        "lagarta elasmo"
+      ]
+    },
+    {
+      "canonical": "EUSCHE",
+      "nome_pt": "percevejo-marrom",
+      "nome_es": "chinche marron",
+      "nome_en": "brown stink bug",
+      "scientific_name": "Euschistus heros",
+      "category": "praga",
+      "eppo": "EUSCHE",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "chinche marron",
+        "percevejo marrom"
+      ]
+    },
+    {
+      "canonical": "FRANOC",
+      "nome_pt": "tripes",
+      "nome_es": "trips occidental de las flores",
+      "nome_en": "western flower thrips",
+      "scientific_name": "Frankliniella occidentalis",
+      "category": "praga",
+      "eppo": "FRANOC",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "tripes",
+        "trips",
+        "trips occidental de las flores"
+      ]
+    },
+    {
+      "canonical": "HELIAR",
+      "nome_pt": "lagarta-armigera",
+      "nome_es": "gusano bellotero",
+      "nome_en": "cotton bollworm",
+      "scientific_name": "Helicoverpa armigera",
+      "category": "praga",
+      "eppo": "HELIAR",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "gusano bellotero",
+        "lagarta armigera",
+        "oruga bolillera"
+      ]
+    },
+    {
+      "canonical": "HELIZE",
+      "nome_pt": "lagarta-da-espiga",
+      "nome_es": "gusano elotero",
+      "nome_en": "corn earworm",
+      "scientific_name": "Helicoverpa zea",
+      "category": "praga",
+      "eppo": "HELIZE",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "gusano elotero",
+        "lagarta da espiga",
+        "oruga de la espiga"
+      ]
+    },
+    {
+      "canonical": "LAPHFR",
+      "nome_pt": "lagarta-do-cartucho",
+      "nome_es": "cogollero",
+      "nome_en": "fall armyworm",
+      "scientific_name": "Spodoptera frugiperda",
+      "category": "praga",
+      "eppo": "LAPHFR",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "cogollero",
+        "gusano cogollero",
+        "lagarta do cartucho",
+        "lagarta militar"
+      ]
+    },
+    {
+      "canonical": "MYZUPE",
+      "nome_pt": "pulgao-verde",
+      "nome_es": "pulgon verde",
+      "nome_en": "green peach aphid",
+      "scientific_name": "Myzus persicae",
+      "category": "praga",
+      "eppo": "MYZUPE",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "pulgao verde",
+        "pulgon verde"
+      ]
+    },
+    {
+      "canonical": "PRODER",
+      "nome_pt": "lagarta-das-vagens",
+      "nome_es": "oruga militar del sur",
+      "nome_en": "southern armyworm",
+      "scientific_name": "Spodoptera eridania",
+      "category": "praga",
+      "eppo": "PRODER",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "lagarta das vagens",
+        "oruga militar del sur"
+      ]
+    },
+    {
+      "canonical": "PSEPIN",
+      "nome_pt": "falsa-medideira",
+      "nome_es": "falsa medidora",
+      "nome_en": "soybean looper",
+      "scientific_name": "Chrysodeixis includens",
+      "category": "praga",
+      "eppo": "PSEPIN",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "falsa medidora",
+        "falso medidor"
+      ]
+    },
+    {
+      "canonical": "RACHNU",
+      "nome_pt": "lagarta-falsa-medideira",
+      "nome_es": "oruga medidora",
+      "nome_en": "looper",
+      "scientific_name": "Rachiplusia nu",
+      "category": "praga",
+      "eppo": "RACHNU",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "oruga medidora",
+        "lagarta falsa medideira"
+      ]
+    },
+    {
+      "canonical": "SPODCO",
+      "nome_pt": "lagarta-preta-da-soja",
+      "nome_es": "oruga militar negra",
+      "nome_en": "black armyworm",
+      "scientific_name": "Spodoptera cosmioides",
+      "category": "praga",
+      "eppo": "SPODCO",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "lagarta preta da soja",
+        "oruga militar negra"
+      ]
+    },
+    {
+      "canonical": "THEMGE",
+      "nome_pt": "lagarta-da-soja",
+      "nome_es": "isoca de la soja",
+      "nome_en": "velvetbean caterpillar",
+      "scientific_name": "Anticarsia gemmatalis",
+      "category": "praga",
+      "eppo": "THEMGE",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "lagarta da soja",
+        "isoca de la soja",
+        "gusano terciopelo"
+      ]
+    },
+    {
+      "canonical": "TUTABS",
+      "nome_pt": "traca-do-tomateiro",
+      "nome_es": "polilla del tomate",
+      "nome_en": "tomato leafminer",
+      "scientific_name": "Tuta absoluta",
+      "category": "praga",
+      "eppo": "TUTABS",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "traca do tomateiro",
+        "polilla del tomate",
+        "palomilla del tomate"
+      ]
+    },
+    {
+      "canonical": "HETDGL",
+      "nome_pt": "nematoide-de-cisto-da-soja",
+      "nome_es": "nematodo del quiste de la soja",
+      "nome_en": "soybean cyst nematode",
+      "scientific_name": "Heterodera glycines",
+      "category": "praga",
+      "eppo": "HETDGL",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "nematoide de cisto da soja",
+        "nematodo del quiste de la soja"
+      ]
+    },
+    {
+      "canonical": "MELGIN",
+      "nome_pt": "nematoide-das-galhas",
+      "nome_es": "nematodo agallador",
+      "nome_en": "root-knot nematode",
+      "scientific_name": "Meloidogyne incognita",
+      "category": "praga",
+      "eppo": "MELGIN",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "nematoide das galhas",
+        "nematodo agallador"
+      ]
+    },
+    {
+      "canonical": "MELGJA",
+      "nome_pt": "nematoide-das-galhas-javanes",
+      "nome_es": "nematodo agallador javanes",
+      "nome_en": "javanese root-knot nematode",
+      "scientific_name": "Meloidogyne javanica",
+      "category": "praga",
+      "eppo": "MELGJA",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "nematodo agallador javanes"
+      ]
+    },
+    {
+      "canonical": "PRATBR",
+      "nome_pt": "nematoide-das-lesoes-radiculares",
+      "nome_es": "nematodo de las lesiones",
+      "nome_en": "root lesion nematode",
+      "scientific_name": "Pratylenchus brachyurus",
+      "category": "praga",
+      "eppo": "PRATBR",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "nematoide das lesoes radiculares",
+        "nematodo de las lesiones",
+        "nematodo lesionador"
+      ]
+    },
+    {
+      "canonical": "ROTYRE",
+      "nome_pt": "nematoide-reniforme",
+      "nome_es": "nematodo reniforme",
+      "nome_en": "reniform nematode",
+      "scientific_name": "Rotylenchulus reniformis",
+      "category": "praga",
+      "eppo": "ROTYRE",
+      "status": "active",
+      "priority": 10,
+      "aliases": [
+        "nematoide reniforme",
+        "nematodo reniforme"
+      ]
+    }
+  ],
+  "normalizer": {
+    "parcel_word_variants_extra": [
+      "parrocela"
+    ],
+    "known_item_heads_extra": [
+      "buwa"
+    ],
+    "default_recovery_scale_config": {
+      "candidate_max_for_values": 100,
+      "parcelas_por_repeticao": null
+    },
+    "default_recovery_config": {
+      "enabled": true,
+      "auto_apply_confidence": [
+        "alta"
+      ],
+      "parcelas_por_repeticao": null
+    }
+  },
+  "parser": {
+    "parcel_keywords_extra": [
+      "parrocela"
+    ],
+    "known_connector_follow_hints_extra": [
+      "buwa"
+    ],
+    "fitotoxicidade_aliases_extra": [],
+    "fitotoxicidade_alias_heads_extra": [],
+    "item_canonical_aliases_extra": {
+      "buwa": "BUVA"
+    },
+    "default_scale_rules_override": {
+      "CONTROLE": {
+        "min": 0.0,
+        "max": 100.0,
+        "allow_above_max": false,
+        "warn_only": false
+      },
+      "FITOTOXICIDADE": {
+        "min": 0.0,
+        "max": 100.0,
+        "allow_above_max": false,
+        "warn_only": false
+      },
+      "INJURIA": {
+        "min": 0.0,
+        "max": 100.0,
+        "allow_above_max": false,
+        "warn_only": false
+      },
+      "NOTA_PERCENTUAL": {
+        "min": 0.0,
+        "max": 100.0,
+        "allow_above_max": false,
+        "warn_only": false
+      },
+      "CONTAGEM": {
+        "min": 0.0,
+        "max": null,
+        "allow_above_max": true,
+        "warn_only": false
+      },
+      "CONTAGEM_INSETOS": {
+        "min": 0.0,
+        "max": 100.0,
+        "allow_above_max": true,
+        "warn_only": true
+      }
+    },
+    "empty_cell_placeholder": ".",
+    "count_item_hints_extra": []
+  },
+  "transcription": {
+    "model_name_aliases": {
+      "canary": "nvidia/canary-1b-v2",
+      "canary-1b-v2": "nvidia/canary-1b-v2",
+      "nvidia/canary-1b-v2": "nvidia/canary-1b-v2",
+      "large-v3": "nvidia/canary-1b-v2",
+      "whisper-large-v3": "nvidia/canary-1b-v2",
+      "openai/whisper-large-v3": "nvidia/canary-1b-v2"
+    },
+    "canary_model_aliases": {
+      "canary": "nvidia/canary-1b-v2",
+      "canary-1b-v2": "nvidia/canary-1b-v2",
+      "nvidia/canary-1b-v2": "nvidia/canary-1b-v2",
+      "large-v3": "nvidia/canary-1b-v2",
+      "whisper-large-v3": "nvidia/canary-1b-v2",
+      "openai/whisper-large-v3": "nvidia/canary-1b-v2"
+    },
+    "high_quality_temperature_schedule": [
+      0.0,
+      0.2,
+      0.4,
+      0.6
+    ],
+    "high_quality_vad_parameters": {
+      "threshold": 0.5,
+      "min_speech_duration_ms": 220,
+      "min_silence_duration_ms": 650,
+      "speech_pad_ms": 250
+    },
+    "adaptive_decoding": {
+      "fast_beam_floor": 5,
+      "max_quality_beam_floor": 7,
+      "low_confidence_language_probability": 0.8,
+      "low_confidence_avg_logprob": -0.85,
+      "low_confidence_segment_share": 0.35,
+      "high_no_speech_probability": 0.75,
+      "high_no_speech_segment_share": 0.55
+    },
+    "structure_retry": {
+      "min_parcel_markers": 6,
+      "max_irregular_ratio": 0.24,
+      "max_variant_ratio": 0.35,
+      "score_min_gain": 4.0
+    },
+    "max_quality_rescue": {
+      "enabled": true
+    },
+    "cpu_fallback": {
+      "compute_type": "float32"
+    },
+    "photo_loop_retry": {
+      "min_occurrences": 24,
+      "photo_to_parcel_ratio": 4.0
+    }
+  },
+  "successful_improvements": [
+    {
+      "id": "transcription_local_only_faster_whisper",
+      "component": "transcription",
+      "status": "success",
+      "summary": "Transcricao local somente com faster-whisper, sem dependencia de API externa.",
+      "details": [
+        "Pipeline de transcricao mantido offline/local.",
+        "Fluxo com fallback entre CUDA e CPU para robustez operacional."
+      ],
+      "evidence": [
+        "test_local_transcription_service.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_large_v3_cuda_float16",
+      "component": "transcription",
+      "status": "success",
+      "summary": "Modelo padrao ajustado para large-v3 com preferencia de CUDA float16.",
+      "details": [
+        "Mantem foco em qualidade de texto.",
+        "Fallback seguro para CPU quando CUDA nao esta disponivel."
+      ],
+      "evidence": [
+        "settings.py",
+        "test_local_transcription_service.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_adaptive_decoding_quality_retry",
+      "component": "transcription",
+      "status": "success",
+      "summary": "Decodificacao adaptativa com rerun em perfil maximo quando confianca cai.",
+      "details": [
+        "Primeiro passe rapido de alta qualidade.",
+        "Segundo passe automatico em max quality para preservar qualidade textual."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_word_timestamps_default_off",
+      "component": "transcription",
+      "status": "success",
+      "summary": "word_timestamps desativado por padrao para reduzir tempo sem degradar texto.",
+      "details": [
+        "Acelera processamento em audios longos.",
+        "Nao altera a string final de transcricao."
+      ],
+      "evidence": [
+        "settings.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_antihallucination_decode_profile",
+      "component": "transcription",
+      "status": "success",
+      "summary": "Perfil anti-hallucination aplicado na decodificacao.",
+      "details": [
+        "Uso de no_repeat_ngram_size, repetition_penalty e thresholds de estabilidade.",
+        "Reduz repeticoes e invencao de trechos em pausas."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_hotwords_domain_boost",
+      "component": "transcription",
+      "status": "success",
+      "summary": "Hotwords de dominio adicionadas ao fluxo de transcricao.",
+      "details": [
+        "Termos tecnicos passam a ter reforco na decodificacao.",
+        "Deduplicacao e normalizacao de hotwords no runtime."
+      ],
+      "evidence": [
+        "app.py",
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "normalizer_alias_variants_parcela",
+      "component": "normalizer",
+      "status": "success",
+      "summary": "Normalizacao ampliada para variantes ASR de marcador de parcela.",
+      "details": [
+        "Cobertura de PARCELLA, PARSELA, PARCELAS, PAR CELA, PARROCELA e similares.",
+        "Mantem compatibilidade com texto PT/ES ruidoso."
+      ],
+      "evidence": [
+        "transcript_normalizer.py",
+        "test_transcript_normalizer.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "normalizer_block_false_inverted_marker",
+      "component": "normalizer",
+      "status": "success",
+      "summary": "Regra para evitar marcador invertido falso em padroes como '39, PARCELA 308'.",
+      "details": [
+        "Impede criacao indevida de 'Parcela 39'.",
+        "Preserva o marcador numerico real da parcela."
+      ],
+      "evidence": [
+        "transcript_normalizer.py",
+        "test_transcript_normalizer.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "resolver_aliases_regional_weed_variants",
+      "component": "resolver",
+      "status": "success",
+      "summary": "Resolvedor de termos ampliado para variantes regionais de BUVA/AMARGOSO/CONYZA/EPILOBIUM.",
+      "details": [
+        "Inclui buba, bufa, buwa, amagoso, amargozo, conysa, epilovium etc.",
+        "Reduz criacao de colunas falsas por erro de ASR."
+      ],
+      "evidence": [
+        "term_resolver.py",
+        "test_term_resolver.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_item_aliases_and_hints_hardening",
+      "component": "parser",
+      "status": "success",
+      "summary": "Parser endurecido para aliases de item e pistas de conector em cenario ruidoso.",
+      "details": [
+        "Mapeamento canonico ampliado para evitar colunas nao planejadas.",
+        "Pistas linguisticas reforcadas para detecao de item apos valor."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_sequence_repair_out_of_order",
+      "component": "parser",
+      "status": "success",
+      "summary": "Reparo de sequencia regressiva de parcelas em contexto compativel.",
+      "details": [
+        "Corrige casos como 202, 201, 204 para 202, 203, 204 quando evidencias batem.",
+        "Nao aplica quando ha cues de correcao explicita no trecho."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_compact_3010_to_310_rule",
+      "component": "parser",
+      "status": "success",
+      "summary": "Heuristica de recuperacao de parcela compactada 3010 -> 310 com gate de sequencia.",
+      "details": [
+        "Aplica somente quando alinhado ao proximo valor esperado.",
+        "Evita inventar parcelas fora de contexto."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_bare_parcel_transition_inference",
+      "component": "parser",
+      "status": "success",
+      "summary": "Inferencia de parcela implicita quando aparece marcador nu 'Parcela' sem numero entre blocos.",
+      "details": [
+        "Recupera lacunas como 304 entre 303 e 305 com evidencias item+valor.",
+        "Mantem comportamento conservador para evitar falsos positivos."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_infer_tail_parcels_placeholders",
+      "component": "parser",
+      "status": "success",
+      "summary": "Inferencia de cauda de repeticao com linhas placeholder quando sequencia e prefixo limpo.",
+      "details": [
+        "Exemplo: 201-206 em repeticao com base completa gera 207-210 como '.'.",
+        "Permite auditoria sem perder parcelas ditadas sem nota."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_keep_explicit_parcel_rows_without_values",
+      "component": "parser",
+      "status": "success",
+      "summary": "Parcelas explicitas sem valor ditado sao mantidas na tabela final.",
+      "details": [
+        "Previne falsa percepcao de perda de parcela.",
+        "Usa placeholder configurado para valores ausentes."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "parser_empty_cell_placeholder_dot",
+      "component": "parser",
+      "status": "success",
+      "summary": "Padronizacao de celula vazia com placeholder '.' na tabela final.",
+      "details": [
+        "Aplicado apenas na tabela larga final.",
+        "Dados longos e trilhas tecnicas mantem valores nativos."
+      ],
+      "evidence": [
+        "parser_avaliacao.py",
+        "test_parser_variacoes.py",
+        "test_parser_planilha_referencia.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "output_parcela_as_row_identifier",
+      "component": "output",
+      "status": "success",
+      "summary": "Parcela tratada como identificador de linha na visualizacao e no Excel final.",
+      "details": [
+        "Parcela deixa de ser exibida como item avaliado.",
+        "Mantem compatibilidade com ordenacao e consolidacao internas."
+      ],
+      "evidence": [
+        "app.py",
+        "excel_exporter.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "review_text_marks_parcels_without_values",
+      "component": "ui",
+      "status": "success",
+      "summary": "Texto de revisao explicita parcelas sem valores ditados.",
+      "details": [
+        "Evita interpretacao de que parcela foi perdida.",
+        "Linha de revisao mostra 'Parcela X sem valores ditados.'."
+      ],
+      "evidence": [
+        "app.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "photo_directory_auto_rename_on_process",
+      "component": "photo_workflow",
+      "status": "success",
+      "summary": "Modo pasta executa renomeacao de fotos automaticamente no processamento principal.",
+      "details": [
+        "Reduce cliques manuais no fluxo principal.",
+        "Mantem fallback de pacote zip quando aplicavel."
+      ],
+      "evidence": [
+        "app.py"
+      ],
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_structural_retry_parcel_sequence",
+      "component": "transcription",
+      "summary": "Retry adicional por risco estrutural na sequencia de parcelas",
+      "details": [
+        "Aciona rerun max_quality quando a sequencia de parcelas fica irregular mesmo com confianca alta."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:24:01Z",
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_no_vad_rescue_pass",
+      "component": "transcription",
+      "summary": "Passe de resgate sem VAD para casos ruidosos",
+      "details": [
+        "Executa max_quality_no_vad quando o texto ainda fica estruturalmente suspeito apos retry maximo."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:24:02Z",
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_prompt_hotwords_domain_reinforcement",
+      "component": "transcription",
+      "summary": "Prompt e hotwords reforcados para termos canonicos de campo",
+      "details": [
+        "Inclui hotwords base por idioma e instrucao explicita para formato Parcela <numero>."
+      ],
+      "evidence": [
+        "app.py",
+        "transcription_prompt.py"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:24:03Z",
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_cpu_fallback_float32_quality",
+      "component": "transcription",
+      "summary": "Fallback de CPU prioriza float32 para preservar fidelidade",
+      "details": [
+        "Troca fallback fixo int8 por compute_type configuravel com padrao float32 no dicionario."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "rules_dictionary.py",
+        "program_rules_dictionary.json"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:38:55Z",
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_photo_loop_retry_trigger",
+      "component": "transcription",
+      "summary": "Loop anomalo de 'Foto' aciona retry de qualidade",
+      "details": [
+        "Quando tokens de foto ficam desproporcionais a marcadores de parcela, o pipeline executa rerun max_quality."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:38:56Z",
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_photo_loop_rescue_no_vad",
+      "component": "transcription",
+      "summary": "Resgate no-vad tambem considera risco de loop de foto",
+      "details": [
+        "Mesmo sem risco estrutural classico, o passe max_quality_no_vad e tentado quando persiste loop de foto apos max_quality."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "test_local_transcription_service.py"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:38:57Z",
+      "added_at": "2026-07-27"
+    },
+    {
+      "id": "transcription_backend_migration_canary_1b_v2",
+      "component": "transcription",
+      "summary": "Migracao do backend local de transcricao para NVIDIA Canary 1B V2 via NeMo.",
+      "details": [
+        "Servico local agora usa ASRModel.from_pretrained/restore_from com contrato de saida preservado para o app.",
+        "Mantidos retries de qualidade, risco estrutural, loop de foto e passe de resgate no-vad no pipeline local.",
+        "Config de runtime e diagnostico foram atualizados para CANARY_* com compatibilidade WHISPER_* temporaria."
+      ],
+      "evidence": [
+        "local_transcription_service.py",
+        "settings.py",
+        "app.py",
+        "test_local_transcription_service.py",
+        "tools/run_transcription_quality_benchmark.py"
+      ],
+      "status": "success",
+      "updated_at": "2026-07-27T18:47:25Z",
+      "added_at": "2026-07-27"
+    }
+  ]
+}

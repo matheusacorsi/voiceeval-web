@@ -5,6 +5,32 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Pós-transcrição (porte da ferramenta Python → PWA) — em andamento
+
+**Objetivo:** portar o pós-transcrição da ferramenta `2voice_eval_tool` (Python/Streamlit) para a
+PWA em JS puro, descartando os motores de ASR (Whisper/Canary/Gemini) — a PWA já transcreve.
+Pipeline: **normalizar → resolver termos → parsear → exportar Excel + renomear fotos**.
+
+**Fase 1 (feita e validada) — fundação em `js/postprocess/`:**
+- `program_rules_dictionary.json` — dicionário real copiado da ferramenta (term_aliases +
+  multilingual_terms PT/ES/EN + EPPO).
+- `normalize.js` — limpeza de texto (acentos/espaços/pontuação), equivalente ao
+  `transcript_normalizer.py`.
+- `rules.js` — carrega o dicionário e resolve termos (alias → código canônico), casando a frase
+  mais longa primeiro; exclui `PARCELA` (tratado pelo parser).
+- `spoken_numbers.js` — números por extenso PT/ES/EN (0-20, dezenas, cem).
+- `parser.js` — `parseTranscript`: blocos por parcela (parcela/plot/lote + variantes ASR),
+  item→valor, `"<N> para tudo"` preenche todas as colunas, ausência (`não tem X`/`no hay`) deixa a
+  coluna vazia (`.`), tabela ordenada por parcela.
+- **Validação (browser):** reproduz `caso_1/2/3` do `test_parser_variacoes.py` e um caso de
+  resolução (`capim amargoso`→`AMARGOSO`, `buva`→`BUVA`, ausência→`.`). Todos passam.
+
+**Próximas fases:** subamostras (Davis/genérica/terço), correção por voz, exportador `.xlsx`
+(FORMATO_FINAL + LISTA_COPIAR_COLAR via `js/zip.js`), renomeio de fotos por parcela (reusando o
+vínculo foto→áudio anterior que a PWA já grava), e a tela de revisão + integração na Captura.
+
+---
+
 ## Arquitetura geral (base do projeto)
 
 **O que:** PWA (Progressive Web App) 100% estático — HTML + CSS + JavaScript puro (ES Modules),
