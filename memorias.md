@@ -5,6 +5,24 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Teste real (áudio + fotos de campo) — 2 correções no parser
+
+Rodando o app com dados reais de uma avaliação (2 áudios + 13 fotos, ensaio `BR26X01007H-GRP02`,
+praga única `amargoso`, escala 0-100) surgiram e foram corrigidos dois problemas no `parser.js`:
+- **Item padrão para praga única**: quando o avaliador diz só `"Parcela 105 78"` (sem falar a praga,
+  porque é praga única), o valor agora vai para o item configurado (ex.: `AMARGOSO`) em vez de ser
+  descartado. Usa `defaultItem` (derivado de `pestsAvaliadasTexto`) também no modo sem subamostra.
+- **Parcela tolerante ao ASR**: `isParcelaMarker` reconhece qualquer token que comece com `parc`
+  (parcela/parcelsa/parcellas/parceras/parcels/parcelso…), além de lote/plot/clot. Antes, variações
+  do reconhecimento viravam colunas-lixo.
+- Regressão conferida (caso1/2, ausência, subamostra, Davis, correção). `service-worker.js` → `v14`.
+- **Nota do teste**: os `.ogg` do app na verdade são **AAC** (assinatura `ff f9`); o Chromium
+  headless não decodifica AAC, então converti p/ WAV (PyAV) e transcrevi com `whisper-small` (o
+  `tiny` do app aluciona em áudio longo). No device real, o modo Nuvem (Web Speech) transcreve limpo.
+  Resultado: tabela `parcela→AMARGOSO` + boxplot por tratamento (UNTREATED=0, demais 62–94%) + Excel.
+
+---
+
 ## Mapa do ensaio (Excel do ARM) + Boxplots por praga — feito e validado
 
 Recurso **opcional**: na Identificação, o usuário pode carregar o mapa do ensaio exportado do ARM em

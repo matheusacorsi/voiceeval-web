@@ -10,6 +10,11 @@ const PARCEL_KEYWORDS = new Set([
   'lote', 'plot', 'clot'
 ]);
 
+// Marcador de parcela tolerante a variacoes do ASR (parcela/parcelsa/parcellas/parceras/parcels...).
+function isParcelaMarker(norm) {
+  return PARCEL_KEYWORDS.has(norm) || norm.startsWith('parc');
+}
+
 // Pontes entre o marcador e o numero da parcela (ex.: "parcela de 105", "parcela numero 105").
 const BRIDGE_WORDS = new Set(['num', 'numero', 'no', 'de', 'nro', 'n']);
 
@@ -71,9 +76,9 @@ export function extractParcelaFromText(text) {
     .map((raw) => normalizeToken(raw.replace(/\.+$/, '')));
   let last = null;
   for (let i = 0; i < tokens.length; i++) {
-    if (!PARCEL_KEYWORDS.has(tokens[i])) continue;
+    if (!isParcelaMarker(tokens[i])) continue;
     let j = i + 1;
-    while (j < tokens.length && (BRIDGE_WORDS.has(tokens[j]) || PARCEL_KEYWORDS.has(tokens[j]))) j++;
+    while (j < tokens.length && (BRIDGE_WORDS.has(tokens[j]) || isParcelaMarker(tokens[j]))) j++;
     if (j < tokens.length && /^\d+$/.test(tokens[j])) { last = parseInt(tokens[j], 10); i = j; }
   }
   return last;
@@ -93,9 +98,9 @@ function parseCorrectionClause(tokens, i, currentParcela) {
     if (nt === '') { j++; continue; }
     if (CORRECTION_VERBS.has(nt)) break; // novo comando de correcao (nao consome)
 
-    if (PARCEL_KEYWORDS.has(nt)) {
+    if (isParcelaMarker(nt)) {
       let k = j + 1;
-      while (k < tokens.length && (BRIDGE_WORDS.has(tokens[k].norm) || PARCEL_KEYWORDS.has(tokens[k].norm))) k++;
+      while (k < tokens.length && (BRIDGE_WORDS.has(tokens[k].norm) || isParcelaMarker(tokens[k].norm))) k++;
       if (targetItem == null && value == null && k < tokens.length && /^\d+$/.test(tokens[k].norm)) {
         targetParcela = parseInt(tokens[k].norm, 10);
         j = k + 1;
@@ -150,9 +155,9 @@ export function parseTranscript(text, options = {}) {
     if (t.norm === '') { i++; continue; }
 
     // Marcador de parcela -> abre novo bloco.
-    if (PARCEL_KEYWORDS.has(t.norm)) {
+    if (isParcelaMarker(t.norm)) {
       let j = i + 1;
-      while (j < tokens.length && (BRIDGE_WORDS.has(tokens[j].norm) || PARCEL_KEYWORDS.has(tokens[j].norm))) j++;
+      while (j < tokens.length && (BRIDGE_WORDS.has(tokens[j].norm) || isParcelaMarker(tokens[j].norm))) j++;
       if (j < tokens.length && /^\d+$/.test(tokens[j].norm)) {
         currentParcela = parseInt(tokens[j].norm, 10);
         ensureRow(currentParcela);
@@ -228,6 +233,10 @@ export function parseTranscript(text, options = {}) {
 
       if (currentItem != null) {
         ensureRow(currentParcela)[currentItem] = value;
+      } else if (defaultItem) {
+        // Praga unica nao dita ("Parcela 105 78" -> 78 vai para o item configurado, ex.: AMARGOSO).
+        ensureCol(defaultItem);
+        ensureRow(currentParcela)[defaultItem] = value;
       }
       i++;
       continue;
