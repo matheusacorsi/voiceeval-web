@@ -18,19 +18,32 @@ function isParcelaMarker(norm) {
 // Pontes entre o marcador e o numero da parcela (ex.: "parcela de 105", "parcela numero 105").
 const BRIDGE_WORDS = new Set(['num', 'numero', 'no', 'de', 'nro', 'n']);
 
-// Palavras ignoradas no fluxo (porte do FILLER_WORDS). Inclui negacoes de ausencia
-// ("nao tem X"/"no hay") para que o item apareca como coluna vazia ('.'), sem valor.
+// Palavras ignoradas no fluxo (porte do FILLER_WORDS + ITEM_CONNECTOR_WORDS + WITNESS_WORDS do
+// parser_avaliacao.py). Inclui negacoes de ausencia ("nao tem X"/"no hay") para que o item apareca
+// como coluna vazia ('.'), sem valor; conectores entre itens ("depois/tambem/ai") e rotulos de
+// testemunha/parcela-controle, para que nenhum deles vire uma coluna de item por engano.
 const FILLER_WORDS = new Set([
-  'nota', 'valor', 'avaliacao', 'evaluation', 'evaluacion', 'evaluacao',
-  'por', 'ciento', 'cento', 'da', 'do', 'del', 'la', 'el', 'em', 'en',
-  'com', 'con', 'with', 'e', 'y', 'and', 'foto', 'photo', 'picture', 'imagen',
+  'nota', 'valor', 'avaliacao', 'evaluation', 'evaluacion', 'evaluacao', 'evaluaci',
+  'por', 'ciento', 'cento', 'porcentaje', 'percentual', 'percentagem', 'percentage',
+  'da', 'do', 'del', 'de', 'la', 'el', 'em', 'en', 'com', 'con', 'with', 'e', 'y', 'and',
+  'foto', 'photo', 'picture', 'imagen',
   'planta', 'plantas', 'plant', 'plants', 'iniciar', 'inicial', 'start',
   'encerrar', 'finalizar', 'end', 'proxima', 'siguiente', 'next',
   'bloco', 'bloque', 'block', 'tratamento', 'tratamiento', 'treatment',
   'repeticao', 'repeticion', 'replication', 'subsample', 'subsamples',
-  'escore', 'score', 'rating', 'puntuacion', 'calificacion',
+  'escore', 'score', 'rating', 'puntuacion', 'calificacion', 'pontuacao',
   'tudo', 'todo', 'todos', 'todas', 'all',
-  'nao', 'no', 'tem', 'hay', 'sem', 'sin', 'ausente', 'presente', 'not', 'para', 'for'
+  'nao', 'no', 'tem', 'hay', 'sem', 'sin', 'ausente', 'presente', 'not', 'para', 'for',
+  // Introducao/setup do ensaio (evita virar item se a fala incluir o cabecalho do ensaio).
+  'fecha', 'data', 'ensayo', 'ensaio', 'experiment', 'experimento', 'trial', 'grp', 'fin', 'fim', 'n',
+  // Delineamento declarado (tempo futuro): "tratamento X recebe/sera ...".
+  'recebe', 'recebera', 'recebeu', 'receber', 'atribuir', 'atribuido', 'sera',
+  'recibe', 'recibira', 'recibio', 'will', 'receive', 'receives', 'era', 'onde', 'falei',
+  // Conectores entre itens ("buva 10 depois amargoso 20", "tambem", "ai").
+  'ai', 'depois', 'tambem', 'mais', 'entao', 'na', 'sequencia', 'seguido', 'seguida',
+  'despues', 'tambien', 'mas', 'entonces', 'luego', 'secuencia', 'then',
+  // Rotulos de testemunha/parcela-controle (nao sao itens medidos).
+  'testemunha', 'absoluta', 'absoluto', 'capina', 'capinada', 'testigo', 'deshierbe', 'limpio'
 ]);
 
 const ALL_TARGET_WORDS = new Set(['tudo', 'todo', 'todos', 'todas', 'all']);
@@ -47,9 +60,12 @@ const SUBSAMPLE_MARKERS = new Set([
 // Verbos de correcao por voz (PT/ES/EN). Uma correcao sobrescreve um valor ja dito.
 const CORRECTION_VERBS = new Set([
   'corrigir', 'corrige', 'corrija', 'corrigido', 'correcao', 'correccion',
-  'substituir', 'trocar', 'mudar', 'alterar', 'ajustar', 'atualizar',
-  'corregir', 'sustituir', 'cambiar', 'modificar', 'actualizar',
-  'correct', 'fix', 'change', 'replace', 'update'
+  'substituir', 'trocar', 'mudar', 'alterar', 'ajustar', 'atualizar', 'refazer', 'revisar',
+  'corregir', 'sustituir', 'cambiar', 'modificar', 'actualizar', 'rehacer',
+  'correct', 'fix', 'change', 'replace', 'update', 'redo', 'review',
+  // Apagar e recolocar (borrar/erase) — reconhecidos como cue de correcao.
+  'apagar', 'remover', 'cancelar', 'desconsiderar', 'excluir',
+  'borrar', 'eliminar', 'delete', 'remove', 'cancel', 'disregard', 'exclude'
 ]);
 
 // Palavras de ligacao/resultado ignoradas dentro da clausula de correcao
