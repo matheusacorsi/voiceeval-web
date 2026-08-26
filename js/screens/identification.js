@@ -2,6 +2,8 @@ import { qs, qsa, toast } from '../utils.js';
 import { t } from '../i18n.js';
 import { getAllTrialHistory } from '../db.js';
 import { session, loadIdentification } from '../state.js';
+import { readXlsx } from '../postprocess/xlsx_read.js';
+import { parseTrialMap, trialMapHasData } from '../postprocess/trialmap.js';
 
 const form = qs('#formIdentificacao');
 const inputNome = qs('#inputNomeEnsaio');
@@ -13,6 +15,8 @@ const trialHistoryList = qs('#trialHistoryList');
 const btnAbrirHistorico = qs('#btnAbrirHistoricoEnsaios');
 const historicoPanel = qs('#historicoEnsaiosPanel');
 const btnVoltar = qs('#btnVoltarIdentificacao');
+const inputTrialFile = qs('#inputTrialFile');
+const trialFileStatus = qs('#trialFileStatus');
 
 let navigate = null;
 
@@ -49,8 +53,35 @@ function applyHistoryItem(item) {
   historicoPanel.classList.add('hidden');
 }
 
+function showTrialStatus(map) {
+  trialFileStatus.textContent = t('msg_trial_carregado', { t: map.numTreatments, r: map.numReps, id: map.trialId || '-' });
+  trialFileStatus.classList.remove('hidden');
+}
+
+// Le o .xlsx do ARM (opcional), extrai tratamentos + mapa e pre-preenche os campos.
+async function onTrialFile(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  try {
+    const { sheets } = await readXlsx(await file.arrayBuffer());
+    const map = parseTrialMap(sheets);
+    if (!trialMapHasData(map)) throw new Error('sem dados');
+    session.trialMap = map;
+    if (!inputNome.value.trim() && map.trialId) inputNome.value = map.trialId;
+    if (map.numTreatments) inputTratamentos.value = map.numTreatments;
+    if (map.numReps) inputRepeticoes.value = map.numReps;
+    showTrialStatus(map);
+  } catch (err) {
+    session.trialMap = null;
+    trialFileStatus.textContent = t('msg_trial_erro');
+    trialFileStatus.classList.remove('hidden');
+  }
+}
+
 export function initIdentificationScreen(navigateFn) {
   navigate = navigateFn;
+
+  inputTrialFile.addEventListener('change', onTrialFile);
 
   btnAbrirHistorico.addEventListener('click', async () => {
     const isHidden = historicoPanel.classList.contains('hidden');
@@ -91,5 +122,7 @@ export function initIdentificationScreen(navigateFn) {
 export async function onEnterIdentification() {
   fillFormFromSession();
   historicoPanel.classList.add('hidden');
+  if (session.trialMap && trialMapHasData(session.trialMap)) showTrialStatus(session.trialMap);
+  else trialFileStatus.classList.add('hidden');
   await renderHistoryOptions();
 }

@@ -3,6 +3,7 @@ import { t, getLang } from '../i18n.js';
 import { session, resetSession } from '../state.js';
 import { runPipeline, joinTranscripts, subsampleOptionsFromSession } from '../postprocess/pipeline.js';
 import { buildPhotoNames } from '../postprocess/photos.js';
+import { drawBoxplot } from '../postprocess/boxplot.js';
 import { buildDeliveryFiles } from '../summary.js';
 import { deletePendingEvaluation, deleteMediaFilesBySession } from '../db.js';
 import { exportFiles } from '../sync.js';
@@ -17,6 +18,11 @@ const btnVoltar = qs('#btnVoltarRevisao');
 const transcricaoTexto = qs('#revisaoTranscricaoTexto');
 const revisaoFotos = qs('#revisaoFotos');
 const revisaoFotosLista = qs('#revisaoFotosLista');
+const revisaoBoxplots = qs('#revisaoBoxplots');
+const boxplotBtns = qs('#boxplotBtns');
+const boxplotModal = qs('#boxplotModal');
+const boxplotCanvas = qs('#boxplotCanvas');
+const boxplotClose = qs('#boxplotClose');
 
 let navigate = null;
 // Modelo editavel: colunas de item (sem "Parcela") + linhas {Parcela, <col>: valor}.
@@ -183,6 +189,83 @@ export function initReviewScreen(navigateFn) {
   btnAddColuna.addEventListener('click', addColumn);
   btnExportar.addEventListener('click', exportarPacote);
   btnVoltar.addEventListener('click', () => navigate('captura'));
+  boxplotBtns.addEventListener('click', (e) => {
+    const pest = e.target.getAttribute('data-pest');
+    if (pest) openBoxplot(pest);
+  });
+  boxplotClose.addEventListener('click', () => boxplotModal.classList.add('hidden'));
+  boxplotModal.addEventListener('click', (e) => { if (e.target === boxplotModal) boxplotModal.classList.add('hidden'); });
+}
+
+// ---- Boxplots por praga (agrupados por tratamento via mapa do ensaio) ----
+const SUB_RE = /^(.+)_S(\d{2,})$/;
+
+function pestNames() {
+  const out = [];
+  for (const col of model.columns) {
+    const m = SUB_RE.exec(col);
+    const pest = m ? m[1] : col;
+    if (!out.includes(pest)) out.push(pest);
+  }
+  return out;
+}
+
+// Valor da parcela para uma praga = media das colunas dessa praga (subamostras) naquela linha.
+function seriesForPest(pest) {
+  const cols = model.columns.filter((col) => { const m = SUB_RE.exec(col); return (m ? m[1] : col) === pest; });
+  const valueByParcela = new Map();
+  for (const row of model.rows) {
+    const parcela = parseInt(row.Parcela, 10);
+    if (!Number.isFinite(parcela)) continue;
+    const vals = [];
+    for (const c of cols) {
+      const raw = row[c];
+      if (raw === '' || raw == null || raw === '.') continue;
+      const nn = Number(String(raw).replace(',', '.'));
+      if (Number.isFinite(nn)) vals.push(nn);
+    }
+    if (vals.length) valueByParcela.set(parcela, vals.reduce((a, b) => a + b, 0) / vals.length);
+  }
+  return valueByParcela;
+}
+
+function groupsByTreatment(valueByParcela) {
+  const map = session.trialMap;
+  const byTrt = new Map();
+  for (const [parcela, value] of valueByParcela) {
+    const trt = map.parcelaToTreatment[parcela];
+    if (trt == null) continue;
+    if (!byTrt.has(trt)) byTrt.set(trt, []);
+    byTrt.get(trt).push(value);
+  }
+  const label = (trt) => { const x = map.treatments.find((tt) => tt.trt === trt); return x && x.label ? `${trt} - ${x.label}` : String(trt); };
+  return [...byTrt.entries()].sort((a, b) => a[0] - b[0]).map(([trt, values]) => ({ label: label(trt), values }));
+}
+
+function hasTrialMap() {
+  return !!(session.trialMap && session.trialMap.parcelaToTreatment && Object.keys(session.trialMap.parcelaToTreatment).length);
+}
+
+function renderBoxplotButtons() {
+  if (!hasTrialMap() || !model.columns.length) { revisaoBoxplots.classList.add('hidden'); return; }
+  boxplotBtns.innerHTML = pestNames()
+    .map((p) => `<button type="button" class="btn secondary" data-pest="${escapeAttr(p)}">${escapeAttr(t('btn_boxplot'))}: ${escapeAttr(p)}</button>`)
+    .join('');
+  revisaoBoxplots.classList.remove('hidden');
+}
+
+function openBoxplot(pest) {
+  const groups = groupsByTreatment(seriesForPest(pest));
+  const width = Math.max(340, groups.length * 62 + 70);
+  const height = 420;
+  const dpr = window.devicePixelRatio || 1;
+  boxplotCanvas.width = Math.round(width * dpr);
+  boxplotCanvas.height = Math.round(height * dpr);
+  boxplotCanvas.style.width = width + 'px';
+  boxplotCanvas.style.height = height + 'px';
+  boxplotCanvas.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawBoxplot(boxplotCanvas, { title: pest, yLabel: t('lbl_valor'), groups, width, height });
+  boxplotModal.classList.remove('hidden');
 }
 
 // Deriva as opcoes de subamostra a partir da configuracao da avaliacao.
@@ -194,4 +277,5 @@ export async function onEnterReview() {
   model = modelFromParsed(parsed);
   renderTable();
   renderPhotos();
+  renderBoxplotButtons();
 }

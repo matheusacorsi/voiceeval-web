@@ -443,3 +443,35 @@ table.data-table .cell-parcela {
   overflow-y: auto;
   color: var(--muted);
 }
+
+/* Boxplots por praga (revisao) */
+.boxplot-section {
+  margin: 12px 0;
+}
+
+.row-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.row-wrap .btn {
+  width: auto;
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+
+.modal-box-wide {
+  max-width: 95vw;
+  width: auto;
+}
+
+.boxplot-scroll {
+  overflow-x: auto;
+  max-width: 92vw;
+  -webkit-overflow-scrolling: touch;
+}
+
+.boxplot-scroll canvas {
+  display: block;
+}

@@ -5,6 +5,32 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Mapa do ensaio (Excel do ARM) + Boxplots por praga — feito e validado
+
+Recurso **opcional**: na Identificação, o usuário pode carregar o mapa do ensaio exportado do ARM em
+`.xlsx`. Se carregar, o app extrai tudo; se não, segue como antes.
+
+- `js/postprocess/xlsx_read.js`: lê `.xlsx` **no próprio navegador**, sem dependências — desempacota o
+  ZIP (diretório central) e infla cada parte com `DecompressionStream('deflate-raw')`, depois lê
+  sharedStrings + worksheets → matrizes por aba. (best-effort; navegador sem DecompressionStream cai
+  no catch e segue sem o mapa.)
+- `js/postprocess/trialmap.js`: acha a tabela de tratamentos (linha `Trt`/`Description`) e a grade de
+  casualização (células `parcela`⏎`tratamento`, ex.: `301`⏎`13`) por conteúdo (não depende do nome da
+  aba). **Regra V/V = adjuvante**: partes com `% V/V` saem do rótulo do tratamento (viram `adjuvant`).
+  Extrai `trialId`, nº de tratamentos e nº de repetições (blocos 1xx/2xx/3xx).
+- Identificação (`identification.js` + `#inputTrialFile`): ao carregar, guarda `session.trialMap` e
+  **pré-preenche** nome do ensaio (Trial ID), nº de tratamentos e repetições. Falha → toast e segue.
+- `js/postprocess/boxplot.js`: estatística (min/Q1/mediana/Q3/máx/média) + desenho em `<canvas>` puro.
+- Revisão: se há mapa, aparece um botão **"Boxplot: <praga>"** por praga; abre um modal com o gráfico
+  **agrupado por tratamento** (rótulo = `Nº - descrição`), rolável no eixo X. Valor da parcela =
+  média das subamostras. Recalcula na hora → reflete edições feitas na tabela antes de exportar.
+- `service-worker.js` → `voiceeval-v13` + os 3 módulos novos no APP_SHELL.
+- **Validação (browser real, injetando o `Book1.xlsx` do ARM):** 13 tratamentos, 3 repetições,
+  `BR26X01007H-GRP02`; V/V separado (GF-4866/SELECT com adjuvante, ZAPP QI sem); mapa 39 parcelas
+  (301→13, 205→2, 113→13); boxplot do ELEIN abre com 13 grupos desenhados.
+
+---
+
 ## Excel dentro do pacote de entrega (não é mais produto separado) — feito
 
 Antes: "Exportar Excel" gerava só o `.xlsx` solto e "Transmitir" mandava o ZIP sem o Excel.

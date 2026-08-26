@@ -18,6 +18,7 @@ function emptySession() {
     status: 'rascunho',
     idiomaFala: '', // resolvido na tela de Captura (ex.: pt-BR); '' = herdar do idioma da UI
     modoTranscricao: 'nuvem', // 'nuvem' | 'local' | 'desativada'
+    trialMap: null, // mapa do ensaio (tratamentos + parcela->tratamento) importado de xlsx; opcional
     audios: [], // { id, blob, mime, tsInicio, tsFim, duracaoS, indice, transcript, transcricaoStatus }
     fotos: [] // { id, blob, mime, timestamp, indice, audioAnteriorId, audioAnteriorIndice }
   };

@@ -30,6 +30,13 @@
   </div>
 </div>
 
+<div id="boxplotModal" class="modal-overlay hidden" role="dialog" aria-modal="true">
+  <div class="modal-box modal-box-wide">
+    <div class="boxplot-scroll"><canvas id="boxplotCanvas"></canvas></div>
+    <button type="button" id="boxplotClose" class="btn secondary" data-i18n="btn_fechar">Fechar</button>
+  </div>
+</div>
+
 <header class="topbar">
   <h1 id="appTitle" data-i18n="app_titulo">VoiceEval</h1>
   <div class="topbar-actions">
@@ -64,6 +71,10 @@
     <div class="card">
       <h2 data-i18n="titulo_identificacao">Identificacao da avaliacao</h2>
       <form id="formIdentificacao">
+        <label for="inputTrialFile" data-i18n="lbl_trial_file">Mapa do ensaio (Excel, opcional)</label>
+        <input id="inputTrialFile" type="file" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" />
+        <p id="trialFileStatus" class="muted hidden"></p>
+
         <label for="inputNomeEnsaio" data-i18n="hint_nome_ensaio">Nome do ensaio</label>
         <input id="inputNomeEnsaio" class="input-uppercase" type="text" list="trialHistoryList" autocomplete="off" required />
         <datalist id="trialHistoryList"></datalist>
@@ -213,6 +224,11 @@
         <summary data-i18n="lbl_ver_fotos">Fotos por parcela</summary>
         <ul id="revisaoFotosLista" class="list"></ul>
       </details>
+
+      <div id="revisaoBoxplots" class="boxplot-section hidden">
+        <p class="muted" data-i18n="lbl_boxplots">Boxplots por praga (dispersão por tratamento)</p>
+        <div id="boxplotBtns" class="row-wrap"></div>
+      </div>
 
       <button type="button" id="btnExportarExcel" class="btn" data-i18n="btn_exportar_excel">Exportar e transmitir tudo</button>
       <button type="button" id="btnVoltarRevisao" class="btn secondary" data-i18n="btn_voltar">Voltar</button>
