@@ -100,8 +100,8 @@ function renderTable() {
   const body = `<tbody>${model.rows.map((row, ri) => {
     const perdida = !!row._perdida;
     return `<tr class="${perdida ? 'row-perdida' : ''}">
-    <td><input type="text" inputmode="numeric" class="cell-input cell-parcela" data-row="${ri}" data-field="Parcela" value="${escapeAttr(row.Parcela)}" /></td>
-    ${model.columns.map((c, ci) => `<td><input type="text" inputmode="decimal" class="cell-input" data-row="${ri}" data-col="${ci}" value="${escapeAttr(perdida ? '' : row[c])}"${perdida ? ' disabled' : ''} /></td>`).join('')}
+    <td><input type="text" inputmode="numeric" enterkeyhint="next" class="cell-input cell-parcela" data-row="${ri}" data-field="Parcela" value="${escapeAttr(row.Parcela)}" /></td>
+    ${model.columns.map((c, ci) => `<td><input type="text" inputmode="decimal" enterkeyhint="next" class="cell-input" data-row="${ri}" data-col="${ci}" value="${escapeAttr(perdida ? '' : row[c])}"${perdida ? ' disabled' : ''} /></td>`).join('')}
     <td class="cell-actions">
       <button type="button" class="cell-perdida${perdida ? ' on' : ''}" data-perdida-row="${ri}" title="${escapeAttr(t('btn_parcela_perdida'))}" aria-label="${escapeAttr(t('btn_parcela_perdida'))}">&#8709;</button>
       <button type="button" class="cell-del" data-del-row="${ri}" aria-label="${escapeAttr(t('aria_remover_linha'))}">&times;</button>
@@ -165,6 +165,48 @@ function onTableClick(e) {
     model.rows.splice(Number(delRow), 1);
     renderTable();
   }
+}
+
+function focusCell(el) {
+  if (!el) return;
+  el.focus();
+  if (typeof el.select === 'function') el.select();
+}
+
+// Proxima celula editavel em ordem coluna-a-coluna (desce a coluna; no fim vai ao topo da proxima),
+// pulando celulas desabilitadas (parcelas perdidas). Devolve null quando nao ha mais.
+function findNextEditable(fromRow, fromCol) {
+  const nCols = model.columns.length;
+  const nRows = model.rows.length;
+  let ri = fromRow;
+  let ci = fromCol;
+  for (let guard = 0; guard < nRows * nCols + nCols; guard++) {
+    ri += 1;
+    if (ri >= nRows) { ri = 0; ci += 1; }
+    if (ci >= nCols) return null;
+    const input = tabela.querySelector(`.cell-input[data-row="${ri}"][data-col="${ci}"]`);
+    if (input && !input.disabled) return input;
+  }
+  return null;
+}
+
+// Enter numa celula avanca para a proxima parcela (mesma coluna). Da o Enter/avancar onde a tecla
+// existe (Android, teclado fisico); no iPhone o teclado numerico nao tem Enter (limitacao do iOS).
+function onTableKeydown(e) {
+  if (e.key !== 'Enter') return;
+  const el = e.target;
+  if (!el.classList || !el.classList.contains('cell-input')) return;
+  e.preventDefault();
+  if (el.classList.contains('col-head')) { el.blur(); return; }
+  const ri = Number(el.dataset.row);
+  if (el.dataset.field === 'Parcela') {
+    const first = tabela.querySelector(`.cell-input[data-row="${ri}"][data-col="0"]`);
+    focusCell(first && !first.disabled ? first : findNextEditable(ri, 0));
+    return;
+  }
+  const ci = Number(el.dataset.col);
+  const next = findNextEditable(ri, ci);
+  if (next) focusCell(next); else el.blur();
 }
 
 function addRow() {
@@ -238,6 +280,7 @@ export function initReviewScreen(navigateFn) {
   navigate = navigateFn;
   tabela.addEventListener('input', onTableInput);
   tabela.addEventListener('click', onTableClick);
+  tabela.addEventListener('keydown', onTableKeydown);
   btnAddLinha.addEventListener('click', addRow);
   btnAddColuna.addEventListener('click', addColumn);
   btnExportar.addEventListener('click', exportarPacote);
