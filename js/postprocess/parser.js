@@ -35,6 +35,9 @@ const FILLER_WORDS = new Set([
 
 const ALL_TARGET_WORDS = new Set(['tudo', 'todo', 'todos', 'todas', 'all']);
 
+// Comando "parcela perdida": marca a parcela inteira como perdida (nao e dado faltando; sai '.').
+const PERDIDA_WORDS = new Set(['perdida', 'perdido', 'perdidas', 'perdidos', 'perda', 'lost']);
+
 // Marcadores de subamostra (usados apenas em modo subamostra): "planta 1", "subamostra 3"...
 const SUBSAMPLE_MARKERS = new Set([
   'planta', 'plantas', 'plant', 'plants',
@@ -139,6 +142,7 @@ export function parseTranscript(text, options = {}) {
 
   const rows = new Map(); // parcela(int) -> { <coluna>: valor }
   const columns = []; // colunas na ordem de primeira aparicao
+  const perdidas = new Set(); // parcelas marcadas como perdidas por voz
   const ensureCol = (item) => { if (!columns.includes(item)) columns.push(item); };
   const ensureRow = (p) => { if (!rows.has(p)) rows.set(p, {}); return rows.get(p); };
 
@@ -189,6 +193,16 @@ export function parseTranscript(text, options = {}) {
     }
 
     if (currentParcela == null) { i++; continue; }
+
+    // "parcela 305 perdida" / "... perdida" -> marca a parcela atual inteira (sobrepoe valores ditos).
+    if (PERDIDA_WORDS.has(t.norm)) {
+      perdidas.add(currentParcela);
+      const row = ensureRow(currentParcela);
+      for (const k of Object.keys(row)) delete row[k];
+      currentItem = null;
+      i++;
+      continue;
+    }
 
     // Modo subamostra: "planta 3" / "subamostra 2" define o slot explicito do proximo valor.
     if (subsampleMode && SUBSAMPLE_MARKERS.has(t.norm)) {
@@ -266,6 +280,6 @@ export function parseTranscript(text, options = {}) {
       return row;
     });
 
-  return { tabela_final, columns: ['Parcela', ...columns] };
+  return { tabela_final, columns: ['Parcela', ...columns], perdidas: [...perdidas].sort((a, b) => a - b) };
 }
 

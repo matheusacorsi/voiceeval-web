@@ -17,13 +17,13 @@ export function joinTranscripts(audios) {
 // options: { subsamples?:number, defaultItem?:string } — repassados ao parser (modo subamostra).
 export async function runPipeline(rawText, options = {}) {
   const text = String(rawText || '').trim();
-  if (!text) return { tabela_final: [], columns: ['Parcela'], resolvedText: '', normalizedText: '' };
+  if (!text) return { tabela_final: [], columns: ['Parcela'], perdidas: [], resolvedText: '', normalizedText: '' };
 
   const normalizedText = normalizeTranscript(text);
   const aliasIndex = await getAliasIndex();
   const { resolvedText } = resolveKnownTerms(normalizedText, aliasIndex);
-  const { tabela_final, columns } = parseTranscript(resolvedText, options);
-  return { tabela_final, columns, resolvedText, normalizedText };
+  const { tabela_final, columns, perdidas } = parseTranscript(resolvedText, options);
+  return { tabela_final, columns, perdidas: perdidas || [], resolvedText, normalizedText };
 }
 
 // Conveniencia: roda direto a partir dos audios da sessao.

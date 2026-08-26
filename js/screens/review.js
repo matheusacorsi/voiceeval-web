@@ -1,4 +1,4 @@
-import { qs, toast } from '../utils.js';
+import { qs, toast, confirmDialog } from '../utils.js';
 import { t, getLang } from '../i18n.js';
 import { session, resetSession } from '../state.js';
 import { runPipeline, joinTranscripts, subsampleOptionsFromSession, guideFromSession, applyGuide } from '../postprocess/pipeline.js';
@@ -9,6 +9,7 @@ import { deletePendingEvaluation, deleteMediaFilesBySession } from '../db.js';
 import { exportFiles } from '../sync.js';
 
 const revisaoResumo = qs('#revisaoResumo');
+const revisaoIncompletas = qs('#revisaoIncompletas');
 const revisaoVazio = qs('#revisaoVazio');
 const tabela = qs('#tabelaRevisao');
 const btnAddLinha = qs('#btnAddLinha');
@@ -30,6 +31,36 @@ let model = { columns: [], rows: [] };
 
 function escapeAttr(value) {
   return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function isBlankCell(v) {
+  const s = String(v == null ? '' : v).trim();
+  return s === '' || s === '.';
+}
+
+// Parcela pendente: nao perdida e com ao menos uma coluna sem nota.
+function rowIncomplete(row) {
+  if (row._perdida) return false;
+  return model.columns.some((c) => isBlankCell(row[c]));
+}
+
+// Destaca celulas sem nota (parcelas nao perdidas) e atualiza o aviso de parcelas incompletas.
+function updateValidation() {
+  let incompletas = 0;
+  for (let ri = 0; ri < model.rows.length; ri++) {
+    const row = model.rows[ri];
+    if (rowIncomplete(row)) incompletas++;
+    for (let ci = 0; ci < model.columns.length; ci++) {
+      const input = tabela.querySelector(`.cell-input[data-row="${ri}"][data-col="${ci}"]`);
+      if (input) input.classList.toggle('missing', !row._perdida && isBlankCell(row[model.columns[ci]]));
+    }
+  }
+  if (incompletas > 0) {
+    revisaoIncompletas.textContent = t('msg_parcelas_incompletas', { n: incompletas, total: model.rows.length });
+    revisaoIncompletas.classList.remove('hidden');
+  } else {
+    revisaoIncompletas.classList.add('hidden');
+  }
 }
 
 // Preview (somente leitura) do renomeio de fotos por parcela.
@@ -66,14 +97,21 @@ function renderTable() {
     <th></th>
   </tr></thead>`;
 
-  const body = `<tbody>${model.rows.map((row, ri) => `<tr>
+  const body = `<tbody>${model.rows.map((row, ri) => {
+    const perdida = !!row._perdida;
+    return `<tr class="${perdida ? 'row-perdida' : ''}">
     <td><input type="text" inputmode="numeric" class="cell-input cell-parcela" data-row="${ri}" data-field="Parcela" value="${escapeAttr(row.Parcela)}" /></td>
-    ${model.columns.map((c, ci) => `<td><input type="text" inputmode="decimal" class="cell-input" data-row="${ri}" data-col="${ci}" value="${escapeAttr(row[c])}" /></td>`).join('')}
-    <td><button type="button" class="cell-del" data-del-row="${ri}" aria-label="${escapeAttr(t('aria_remover_linha'))}">&times;</button></td>
-  </tr>`).join('')}</tbody>`;
+    ${model.columns.map((c, ci) => `<td><input type="text" inputmode="decimal" class="cell-input" data-row="${ri}" data-col="${ci}" value="${escapeAttr(perdida ? '' : row[c])}"${perdida ? ' disabled' : ''} /></td>`).join('')}
+    <td class="cell-actions">
+      <button type="button" class="cell-perdida${perdida ? ' on' : ''}" data-perdida-row="${ri}" title="${escapeAttr(t('btn_parcela_perdida'))}" aria-label="${escapeAttr(t('btn_parcela_perdida'))}">&#8709;</button>
+      <button type="button" class="cell-del" data-del-row="${ri}" aria-label="${escapeAttr(t('aria_remover_linha'))}">&times;</button>
+    </td>
+  </tr>`;
+  }).join('')}</tbody>`;
 
   tabela.innerHTML = head + body;
   revisaoVazio.classList.toggle('hidden', model.rows.length > 0);
+  updateValidation();
 }
 
 function onTableInput(e) {
@@ -100,6 +138,7 @@ function onTableInput(e) {
     const col = model.columns[Number(el.dataset.col)];
     model.rows[ri][col] = el.value;
   }
+  updateValidation();
 }
 
 function onTableClick(e) {
@@ -109,6 +148,15 @@ function onTableClick(e) {
     const name = model.columns[ci];
     model.columns.splice(ci, 1);
     for (const row of model.rows) delete row[name];
+    renderTable();
+    return;
+  }
+  const perdRow = e.target.getAttribute('data-perdida-row');
+  if (perdRow !== null) {
+    const ri = Number(perdRow);
+    const row = model.rows[ri];
+    row._perdida = !row._perdida;
+    if (row._perdida) for (const c of model.columns) row[c] = '';
     renderTable();
     return;
   }
@@ -164,6 +212,11 @@ function buildTabelaFinal() {
 // Exporta o PACOTE COMPLETO (resumo + transcricao + audios + fotos + Excel revisado) num unico ZIP
 // e transmite. Depois limpa a pendencia e volta ao inicio (mesma conclusao da transmissao direta).
 async function exportarPacote() {
+  const incompletas = model.rows.filter(rowIncomplete).length;
+  if (incompletas > 0) {
+    const ok = await confirmDialog(t('msg_confirmar_exportar_incompletas', { n: incompletas }));
+    if (!ok) return;
+  }
   const tabelaFinal = buildTabelaFinal();
   const columns = ['Parcela', ...model.columns];
   const files = await buildDeliveryFiles(session, session.audios, session.fotos, { tabelaFinal, columns, language: getLang() });
@@ -268,6 +321,18 @@ function openBoxplot(pest) {
   boxplotModal.classList.remove('hidden');
 }
 
+// Marca as parcelas ditas como perdidas (comando de voz) e limpa suas celulas.
+function applyPerdidas(perdidas) {
+  const set = new Set((perdidas || []).map(Number));
+  if (!set.size) return;
+  for (const row of model.rows) {
+    if (set.has(Number(row.Parcela))) {
+      row._perdida = true;
+      for (const c of model.columns) row[c] = '';
+    }
+  }
+}
+
 // Deriva as opcoes de subamostra a partir da configuracao da avaliacao.
 export async function onEnterReview() {
   revisaoResumo.textContent = `${session.nomeEnsaio} ${session.momentoAvaliacao ? '· ' + session.momentoAvaliacao : ''}`;
@@ -276,6 +341,7 @@ export async function onEnterReview() {
   const parsed = await runPipeline(raw, subsampleOptionsFromSession(session));
   const guided = applyGuide(parsed.tabela_final, parsed.columns, guideFromSession(session));
   model = modelFromParsed(guided);
+  applyPerdidas(parsed.perdidas);
   renderTable();
   renderPhotos();
   renderBoxplotButtons();

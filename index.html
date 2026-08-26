@@ -205,6 +205,7 @@
     <div class="card">
       <h2 data-i18n="titulo_revisao">Revisao dos dados</h2>
       <p id="revisaoResumo" class="muted"></p>
+      <p id="revisaoIncompletas" class="warn hidden"></p>
       <p id="revisaoVazio" class="muted hidden" data-i18n="msg_revisao_vazia">Nenhuma parcela foi reconhecida na transcricao. Adicione linhas e colunas manualmente.</p>
 
       <div class="table-scroll">
@@ -215,6 +216,7 @@
         <button type="button" id="btnAddLinha" class="btn secondary" data-i18n="btn_add_linha">+ Parcela</button>
         <button type="button" id="btnAddColuna" class="btn secondary" data-i18n="btn_add_coluna">+ Coluna</button>
       </div>
+      <p id="revisaoPerdidaHint" class="muted" data-i18n="hint_parcela_perdida"></p>
 
       <details id="revisaoTranscricao" class="transcricao-box">
         <summary data-i18n="lbl_ver_transcricao">Ver transcricao reconhecida</summary>

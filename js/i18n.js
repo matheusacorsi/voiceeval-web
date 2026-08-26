@@ -95,7 +95,11 @@ export const DICT = {
   msg_excel_exportado: { pt: 'Planilha Excel gerada.', en: 'Excel spreadsheet generated.', es: 'Hoja de Excel generada.' },
   msg_revisao_sem_dados: { pt: 'Adicione ao menos uma parcela antes de exportar.', en: 'Add at least one plot before exporting.', es: 'Agregue al menos una parcela antes de exportar.' },
   aria_remover_linha: { pt: 'Remover parcela', en: 'Remove plot', es: 'Quitar parcela' },
-  aria_remover_coluna: { pt: 'Remover coluna', en: 'Remove column', es: 'Quitar columna' }
+  aria_remover_coluna: { pt: 'Remover coluna', en: 'Remove column', es: 'Quitar columna' },
+  msg_parcelas_incompletas: { pt: '⚠ {{n}} de {{total}} parcelas sem nota. Preencha ou marque como perdida (∅).', en: '⚠ {{n}} of {{total}} plots without a value. Fill them in or mark as lost (∅).', es: '⚠ {{n}} de {{total}} parcelas sin nota. Complete o marque como perdida (∅).' },
+  msg_confirmar_exportar_incompletas: { pt: 'Existem {{n}} parcela(s) sem nota e não marcadas como perdidas. Exportar e transmitir mesmo assim?', en: 'There are {{n}} plot(s) without a value and not marked as lost. Export and submit anyway?', es: 'Hay {{n}} parcela(s) sin nota y no marcadas como perdidas. ¿Exportar y transmitir de todos modos?' },
+  btn_parcela_perdida: { pt: 'Marcar/desmarcar parcela perdida', en: 'Mark/unmark plot as lost', es: 'Marcar/desmarcar parcela perdida' },
+  hint_parcela_perdida: { pt: 'Parcela perdida: toque no ∅ da linha (ou diga "parcela X perdida"). Ela sai como "." e não conta como pendência.', en: 'Lost plot: tap the ∅ on the row (or say "plot X lost"). It exports as "." and is not counted as missing.', es: 'Parcela perdida: toque el ∅ en la fila (o diga "parcela X perdida"). Sale como "." y no cuenta como pendiente.' }
 };
 
 const SUPPORTED = ['pt', 'en', 'es'];

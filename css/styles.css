@@ -422,6 +422,39 @@ table.data-table .cell-parcela {
   padding: 2px 6px;
 }
 
+.cell-actions { white-space: nowrap; }
+
+.cell-perdida {
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.cell-perdida.on { color: var(--danger); }
+
+table.data-table .cell-input.missing {
+  background: #fdecec;
+  outline: 1px solid var(--danger);
+  border-radius: 4px;
+}
+
+table.data-table tr.row-perdida td { background: #f0f0f0; }
+table.data-table tr.row-perdida .cell-input { color: var(--muted); text-decoration: line-through; }
+
+.warn {
+  background: #fff4e0;
+  border: 1px solid #e8b866;
+  color: #8a5a00;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 0.85rem;
+  margin: 8px 0;
+}
+
 .transcricao-box {
   margin: 12px 0;
   font-size: 0.85rem;
