@@ -5,6 +5,26 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Tabela guiada pela estrutura esperada (sem lixo) — feito e validado
+
+Feedback do usuário: a tabela de revisão não pode ter lixo (coluna "FÓ" do ruído do ASR, parcelas
+fantasma 114/115, parcelas que só vieram do áudio das fotos). O contexto da avaliação (config + mapa
+do ensaio) — o mesmo que o `resumo.md` documenta — passa a ser o **gabarito**.
+
+- `js/postprocess/pipeline.js`: `guideFromSession(session)` = { expectedParcelas, expectedPests }.
+  Parcelas esperadas vêm do **mapa do ensaio** (chaves de `parcelaToTreatment`) ou, na ausência, são
+  derivadas de **tratamentos × repetições** (`r*100 + tratamento`). Pragas esperadas do
+  `pestsAvaliadasTexto`. `applyGuide(tabela, columns, guide)` remove colunas-lixo (sem valor e não
+  esperadas) e parcelas fora do esperado, e — havendo universo esperado — gera **1 linha por parcela
+  esperada** (vazia onde faltou), servindo de guia para preencher/corrigir.
+- Aplicado na **Revisão** (`review.js`) e no **Excel automático** (`summary.js buildEvaluationXlsx`),
+  para transmissão com ou sem revisão. Sem config/guia, é passthrough (não arrisca dropar nada).
+- **Validação (dados reais):** transcrição do áudio real (whisper-small) → tabela só `AMARGOSO`
+  (coluna "FÓ" removida), **39 parcelas esperadas** (101-113/201-213/301-313), 16 valores reais
+  preenchidos (105-110, 303-313), 114/115 fantasma removidas. `service-worker.js` → `v15`.
+
+---
+
 ## Teste real (áudio + fotos de campo) — 2 correções no parser
 
 Rodando o app com dados reais de uma avaliação (2 áudios + 13 fotos, ensaio `BR26X01007H-GRP02`,

@@ -1,7 +1,7 @@
 import { qs, toast } from '../utils.js';
 import { t, getLang } from '../i18n.js';
 import { session, resetSession } from '../state.js';
-import { runPipeline, joinTranscripts, subsampleOptionsFromSession } from '../postprocess/pipeline.js';
+import { runPipeline, joinTranscripts, subsampleOptionsFromSession, guideFromSession, applyGuide } from '../postprocess/pipeline.js';
 import { buildPhotoNames } from '../postprocess/photos.js';
 import { drawBoxplot } from '../postprocess/boxplot.js';
 import { buildDeliveryFiles } from '../summary.js';
@@ -274,7 +274,8 @@ export async function onEnterReview() {
   const raw = joinTranscripts(session.audios);
   transcricaoTexto.textContent = raw || '—';
   const parsed = await runPipeline(raw, subsampleOptionsFromSession(session));
-  model = modelFromParsed(parsed);
+  const guided = applyGuide(parsed.tabela_final, parsed.columns, guideFromSession(session));
+  model = modelFromParsed(guided);
   renderTable();
   renderPhotos();
   renderBoxplotButtons();

@@ -1,6 +1,6 @@
 import { slugify, formatDuration, formatBytes } from './utils.js';
 import { buildPhotoNameMap } from './postprocess/photos.js';
-import { runPipeline, joinTranscripts, subsampleOptionsFromSession } from './postprocess/pipeline.js';
+import { runPipeline, joinTranscripts, subsampleOptionsFromSession, guideFromSession, applyGuide } from './postprocess/pipeline.js';
 import { exportEvaluationXlsx } from './postprocess/xlsx.js';
 import { createZipBlob } from './zip.js';
 
@@ -143,8 +143,9 @@ export function buildZipEntries(evaluation, audios, fotos, resumoMD, extraFiles 
 export async function buildEvaluationXlsx(evaluation, audios, { tabelaFinal, columns, language = 'pt' } = {}) {
   if (!tabelaFinal) {
     const parsed = await runPipeline(joinTranscripts(audios), subsampleOptionsFromSession(evaluation));
-    tabelaFinal = parsed.tabela_final;
-    columns = parsed.columns;
+    const guided = applyGuide(parsed.tabela_final, parsed.columns, guideFromSession(evaluation));
+    tabelaFinal = guided.tabela_final;
+    columns = guided.columns;
   }
   const meta = { ensaio: evaluation.nomeEnsaio, data: evaluation.dataAvaliacao, refFotos: evaluation.momentoAvaliacao, language };
   return exportEvaluationXlsx({ tabelaFinal, columns, plants: null, meta });

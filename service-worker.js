@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'voiceeval-v14';
+const CACHE_VERSION = 'voiceeval-v15';
 const APP_SHELL = [
   './',
   './index.html',
