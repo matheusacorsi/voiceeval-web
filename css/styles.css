@@ -99,6 +99,27 @@ input[type="date"] {
   border-radius: 8px;
   border: 1px solid #c7c7c7;
   font-size: 1rem;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--card);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* iOS Safari renderiza input[type=date] com estilo nativo (fundo cinza, texto centralizado);
+   alinha o valor a esquerda e iguala a altura dos demais campos. */
+input[type="date"] {
+  min-height: 42px;
+  text-align: left;
+}
+
+input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+  margin: 0;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  margin-left: auto;
 }
 
 .input-uppercase {
