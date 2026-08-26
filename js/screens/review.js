@@ -3,6 +3,7 @@ import { t, getLang } from '../i18n.js';
 import { session } from '../state.js';
 import { runPipeline, joinTranscripts } from '../postprocess/pipeline.js';
 import { exportEvaluationXlsx } from '../postprocess/xlsx.js';
+import { buildPhotoNames } from '../postprocess/photos.js';
 import { exportFiles } from '../sync.js';
 
 const revisaoResumo = qs('#revisaoResumo');
@@ -13,6 +14,8 @@ const btnAddColuna = qs('#btnAddColuna');
 const btnExportar = qs('#btnExportarExcel');
 const btnVoltar = qs('#btnVoltarRevisao');
 const transcricaoTexto = qs('#revisaoTranscricaoTexto');
+const revisaoFotos = qs('#revisaoFotos');
+const revisaoFotosLista = qs('#revisaoFotosLista');
 
 let navigate = null;
 // Modelo editavel: colunas de item (sem "Parcela") + linhas {Parcela, <col>: valor}.
@@ -20,6 +23,18 @@ let model = { columns: [], rows: [] };
 
 function escapeAttr(value) {
   return String(value == null ? '' : value).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// Preview (somente leitura) do renomeio de fotos por parcela.
+function renderPhotos() {
+  const fotos = session.fotos || [];
+  if (!fotos.length) { revisaoFotos.classList.add('hidden'); return; }
+  const names = buildPhotoNames(session.audios, fotos);
+  revisaoFotosLista.innerHTML = names.map((p) => {
+    const parcelaLbl = p.parcela != null ? `${t('lbl_coluna_parcela')} ${p.parcela}` : t('lbl_foto_sem_parcela');
+    return `<li><span>#${p.originalIndice} · ${escapeAttr(parcelaLbl)}</span><span class="muted">${escapeAttr(p.name)}</span></li>`;
+  }).join('');
+  revisaoFotos.classList.remove('hidden');
 }
 
 // Converte a saida do parser (tabela_final + columns) no modelo editavel.
@@ -171,11 +186,22 @@ export function initReviewScreen(navigateFn) {
   btnVoltar.addEventListener('click', () => navigate('captura'));
 }
 
+// Deriva as opcoes de subamostra a partir da configuracao da avaliacao.
+function subsampleOptions() {
+  const n = parseInt(session.numeroSubamostras, 10);
+  const subsamples = session.usarSubamostras && n > 0 ? n : 0;
+  const src = String(session.pestsAvaliadasTexto || session.itemAvaliado || '').trim();
+  const firstToken = src.split(/[,;/]/)[0].trim().split(/\s+/)[0];
+  const defaultItem = (firstToken || 'NOTA').toUpperCase();
+  return { subsamples, defaultItem };
+}
+
 export async function onEnterReview() {
   revisaoResumo.textContent = `${session.nomeEnsaio} ${session.momentoAvaliacao ? '· ' + session.momentoAvaliacao : ''}`;
   const raw = joinTranscripts(session.audios);
   transcricaoTexto.textContent = raw || '—';
-  const parsed = await runPipeline(raw);
+  const parsed = await runPipeline(raw, subsampleOptions());
   model = modelFromParsed(parsed);
   renderTable();
+  renderPhotos();
 }

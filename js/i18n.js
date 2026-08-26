@@ -79,6 +79,8 @@ export const DICT = {
   btn_add_coluna: { pt: '+ Coluna', en: '+ Column', es: '+ Columna' },
   btn_exportar_excel: { pt: 'Exportar Excel (.xlsx)', en: 'Export Excel (.xlsx)', es: 'Exportar Excel (.xlsx)' },
   lbl_ver_transcricao: { pt: 'Ver transcrição reconhecida', en: 'View recognized transcription', es: 'Ver transcripción reconocida' },
+  lbl_ver_fotos: { pt: 'Fotos por parcela', en: 'Photos by plot', es: 'Fotos por parcela' },
+  lbl_foto_sem_parcela: { pt: 'sem parcela', en: 'no plot', es: 'sin parcela' },
   lbl_coluna_parcela: { pt: 'Parcela', en: 'Plot', es: 'Parcela' },
   msg_nome_coluna: { pt: 'Nome da coluna (ex.: BUVA, item avaliado):', en: 'Column name (e.g. BUVA, evaluated item):', es: 'Nombre de la columna (ej.: BUVA, ítem evaluado):' },
   msg_excel_exportado: { pt: 'Planilha Excel gerada.', en: 'Excel spreadsheet generated.', es: 'Hoja de Excel generada.' },

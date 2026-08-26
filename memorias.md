@@ -5,6 +5,32 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Subamostras + Renomeio de fotos por parcela — feito e validado
+
+**Subamostras (Davis + genérica):** quando a avaliação está configurada com "Haverá subamostras por
+parcela?" ligado e um número N, o parser passa a interpretar valores após um item como subamostras:
+- **Genérica** (item + N valores): `Parcela 101 cigarrinha 3 5 2 4 1` → colunas `CIGARRINHA_S01..S05`.
+- **Davis / por planta** (`planta K nota V` ou números soltos posicionais): `Parcela 101 planta 1
+  nota 3 planta 2 nota 1` → `<ITEM>_S01=3, _S02=1...`, onde `<ITEM>` vem da config (1ª pest/item) ou
+  `NOTA`. Também aceita sequência crua `Parcela 101 3 1 1 2 ...` (posicional) e cap em N.
+- Item vira coluna em MAIÚSCULA (consistência), resolvendo o termo falado quando está no dicionário.
+- No Excel: FORMATO_FINAL mostra `<ITEM>1..<ITEM>N` e a aba LISTA_COPIAR_COLAR vira a lista vertical
+  (Parcela / item) pronta para copiar. Validado abrindo o `.xlsx` com openpyxl.
+- Config passada via `js/screens/review.js` (`subsampleOptions()` lê `usarSubamostras`,
+  `numeroSubamostras`, `pestsAvaliadasTexto`/`itemAvaliado`) → `runPipeline(text, options)` → parser.
+
+**Renomeio de fotos por parcela:** `js/postprocess/photos.js` usa o vínculo foto→áudio anterior
+(que a PWA já grava) + `extractParcelaFromText` (última parcela dita no trecho, ex.: "...foto parcela
+101") para nomear cada foto como `parcela_<P>_<NN>.<ext>` (NN = sequência por parcela); sem parcela
+reconhecida cai em `foto_<NN>.<ext>`. Aplicado no ZIP de transmissão + resumo.md + transcricao.txt
+(`js/summary.js`) e mostrado como preview (somente leitura) na tela de Revisão ("Fotos por parcela").
+`service-worker.js` → `voiceeval-v9` + `photos.js` no APP_SHELL.
+
+**Validação (app real, cache limpo):** sessão com subamostras → tabela `CIGARRINHA_S01..S05`; fotos →
+`parcela_101_01/02`, `parcela_102_01`, `foto_04` (sem parcela); export `.xlsx` conferido no openpyxl.
+
+---
+
 ## Tela de Revisão + Exportar Excel (integração na PWA) — feito e validado
 
 **O que:** depois de **Finalizar avaliação**, aparece o botão **"Revisar dados e exportar Excel"**

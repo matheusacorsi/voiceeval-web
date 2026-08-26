@@ -1,4 +1,5 @@
 import { slugify, formatDuration, formatBytes } from './utils.js';
+import { buildPhotoNameMap } from './postprocess/photos.js';
 
 export function buildZipFolderName(evaluation) {
   const trial = slugify(evaluation.nomeEnsaio);
@@ -44,13 +45,14 @@ function descreveTranscricao(a) {
 }
 
 export function buildResumoMarkdown(evaluation, audios, fotos) {
+  const photoNames = buildPhotoNameMap(audios, fotos);
   const linhasAudio = audios
     .map((a) => `### ${buildAudioFileName(a)} (${formatDuration(a.duracaoS)}, ${formatBytes(a.bytes)})\n${descreveTranscricao(a)}`)
     .join('\n\n') || '_nenhum_';
   const linhasFoto = fotos
     .map((f) => {
       const vinculo = f.audioAnteriorIndice ? ` — rotulada pelo áudio #${f.audioAnteriorIndice}` : '';
-      return `- ${buildPhotoFileName(f)} (${new Date(f.timestamp).toLocaleString()})${vinculo}`;
+      return `- ${photoNames.get(f.id) || buildPhotoFileName(f)} (${new Date(f.timestamp).toLocaleString()})${vinculo}`;
     })
     .join('\n') || '_nenhuma_';
 
@@ -85,9 +87,10 @@ ${linhasFoto}
  * (analisar, normalizar e gerar o Excel). Preserva ordem, status e o vinculo foto<->audio.
  */
 export function buildTranscricaoTxt(evaluation, audios, fotos) {
+  const photoNames = buildPhotoNameMap(audios, fotos);
   const fotosDoAudio = (indice) => fotos
     .filter((f) => f.audioAnteriorIndice === indice)
-    .map((f) => buildPhotoFileName(f));
+    .map((f) => photoNames.get(f.id) || buildPhotoFileName(f));
 
   const cabecalho = [
     'VoiceEval - Transcricao bruta',
@@ -125,6 +128,7 @@ export function buildZipEntries(evaluation, audios, fotos, resumoMD) {
     { name: `${folder}/Transcricao/transcricao.txt`, blob: new Blob([buildTranscricaoTxt(evaluation, audios, fotos)], { type: 'text/plain' }) }
   ];
   audios.forEach((a) => entries.push({ name: `${folder}/Audios/${buildAudioFileName(a)}`, blob: a.blob }));
-  fotos.forEach((f) => entries.push({ name: `${folder}/Fotos/${buildPhotoFileName(f)}`, blob: f.blob }));
+  const photoNames = buildPhotoNameMap(audios, fotos);
+  fotos.forEach((f) => entries.push({ name: `${folder}/Fotos/${photoNames.get(f.id) || buildPhotoFileName(f)}`, blob: f.blob }));
   return entries;
 }

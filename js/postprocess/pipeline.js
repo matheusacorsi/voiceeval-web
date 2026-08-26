@@ -14,18 +14,19 @@ export function joinTranscripts(audios) {
 }
 
 // Executa o pipeline sobre um texto bruto. Devolve tabela_final + columns + textos intermediarios.
-export async function runPipeline(rawText) {
+// options: { subsamples?:number, defaultItem?:string } — repassados ao parser (modo subamostra).
+export async function runPipeline(rawText, options = {}) {
   const text = String(rawText || '').trim();
   if (!text) return { tabela_final: [], columns: ['Parcela'], resolvedText: '', normalizedText: '' };
 
   const normalizedText = normalizeTranscript(text);
   const aliasIndex = await getAliasIndex();
   const { resolvedText } = resolveKnownTerms(normalizedText, aliasIndex);
-  const { tabela_final, columns } = parseTranscript(resolvedText);
+  const { tabela_final, columns } = parseTranscript(resolvedText, options);
   return { tabela_final, columns, resolvedText, normalizedText };
 }
 
 // Conveniencia: roda direto a partir dos audios da sessao.
-export async function runPipelineFromAudios(audios) {
-  return runPipeline(joinTranscripts(audios));
+export async function runPipelineFromAudios(audios, options = {}) {
+  return runPipeline(joinTranscripts(audios), options);
 }

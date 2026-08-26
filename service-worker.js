@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'voiceeval-v8';
+const CACHE_VERSION = 'voiceeval-v9';
 const APP_SHELL = [
   './',
   './index.html',
@@ -32,6 +32,7 @@ const APP_SHELL = [
   './js/postprocess/parser.js',
   './js/postprocess/pipeline.js',
   './js/postprocess/xlsx.js',
+  './js/postprocess/photos.js',
   './js/postprocess/program_rules_dictionary.json'
 ];
 

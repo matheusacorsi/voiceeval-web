@@ -30,6 +30,12 @@ const FILLER_WORDS = new Set([
 
 const ALL_TARGET_WORDS = new Set(['tudo', 'todo', 'todos', 'todas', 'all']);
 
+// Marcadores de subamostra (usados apenas em modo subamostra): "planta 1", "subamostra 3"...
+const SUBSAMPLE_MARKERS = new Set([
+  'planta', 'plantas', 'plant', 'plants',
+  'subamostra', 'subamostras', 'submuestra', 'submuestras', 'subsample', 'subsamples'
+]);
+
 function isNumberNorm(norm) {
   return /^-?\d+(?:[.,]\d+)?$/.test(norm);
 }
@@ -38,19 +44,47 @@ function numValue(norm) {
   return parseFloat(norm.replace(',', '.'));
 }
 
+function pad2(n) {
+  return String(n).padStart(2, '0');
+}
+
 const EMPTY_PLACEHOLDER = '.';
 
-export function parseTranscript(text) {
+// Extrai o numero da parcela mencionado por ULTIMO no texto (usado para rotular a foto seguinte).
+export function extractParcelaFromText(text) {
+  const tokens = String(text == null ? '' : text).split(/\s+/).filter(Boolean)
+    .map((raw) => normalizeToken(raw.replace(/\.+$/, '')));
+  let last = null;
+  for (let i = 0; i < tokens.length; i++) {
+    if (!PARCEL_KEYWORDS.has(tokens[i])) continue;
+    let j = i + 1;
+    while (j < tokens.length && (BRIDGE_WORDS.has(tokens[j]) || PARCEL_KEYWORDS.has(tokens[j]))) j++;
+    if (j < tokens.length && /^\d+$/.test(tokens[j])) { last = parseInt(tokens[j], 10); i = j; }
+  }
+  return last;
+}
+
+/**
+ * @param {string} text texto normalizado + com termos resolvidos
+ * @param {{subsamples?:number, defaultItem?:string}} [options] subsamples>0 ativa o modo subamostra
+ */
+export function parseTranscript(text, options = {}) {
+  const N = Number(options.subsamples) > 0 ? Number(options.subsamples) : 0;
+  const subsampleMode = N > 0;
+  const defaultItem = String(options.defaultItem || 'NOTA').trim().toUpperCase() || 'NOTA';
+
   const rawTokens = String(text == null ? '' : text).split(/\s+/).filter(Boolean);
   const tokens = rawTokens.map((raw) => ({ raw, norm: normalizeToken(raw.replace(/\.+$/, '')) }));
 
-  const rows = new Map(); // parcela(int) -> { ITEM: valor }
-  const columns = []; // itens na ordem de primeira aparicao
+  const rows = new Map(); // parcela(int) -> { <coluna>: valor }
+  const columns = []; // colunas na ordem de primeira aparicao
   const ensureCol = (item) => { if (!columns.includes(item)) columns.push(item); };
   const ensureRow = (p) => { if (!rows.has(p)) rows.set(p, {}); return rows.get(p); };
 
   let currentParcela = null;
   let currentItem = null;
+  let slotCounter = 0; // ultimo slot de subamostra preenchido para o item atual
+  let pendingSlot = null; // slot explicito ("planta 3") a usar no proximo valor
 
   let i = 0;
   while (i < tokens.length) {
@@ -67,6 +101,8 @@ export function parseTranscript(text) {
         currentParcela = parseInt(tokens[j].norm, 10);
         ensureRow(currentParcela);
         currentItem = null;
+        slotCounter = 0;
+        pendingSlot = null;
         i = j + 1;
         continue;
       }
@@ -75,6 +111,14 @@ export function parseTranscript(text) {
     }
 
     if (currentParcela == null) { i++; continue; }
+
+    // Modo subamostra: "planta 3" / "subamostra 2" define o slot explicito do proximo valor.
+    if (subsampleMode && SUBSAMPLE_MARKERS.has(t.norm)) {
+      const nx = tokens[i + 1];
+      if (nx && /^\d+$/.test(nx.norm)) { pendingSlot = parseInt(nx.norm, 10); i += 2; continue; }
+      i++;
+      continue;
+    }
 
     // Valor (digito ou por extenso).
     let value = null;
@@ -94,6 +138,21 @@ export function parseTranscript(text) {
         i += 3;
         continue;
       }
+
+      if (subsampleMode) {
+        const item = currentItem || defaultItem;
+        const slot = pendingSlot != null ? pendingSlot : slotCounter + 1;
+        pendingSlot = null;
+        if (slot >= 1 && slot <= N) {
+          slotCounter = slot;
+          const col = `${item}_S${pad2(slot)}`;
+          ensureCol(col);
+          ensureRow(currentParcela)[col] = value;
+        }
+        i++;
+        continue;
+      }
+
       if (currentItem != null) {
         ensureRow(currentParcela)[currentItem] = value;
       }
@@ -104,10 +163,16 @@ export function parseTranscript(text) {
     // Filler / negacao de ausencia -> ignora.
     if (FILLER_WORDS.has(t.norm)) { i++; continue; }
 
-    // Caso contrario: cabeca de item (codigo canonico). Cria a coluna; valor virá a seguir
-    // (ou fica vazio '.' no caso de ausencia declarada).
-    currentItem = t.raw.replace(/\.+$/, '');
-    ensureCol(currentItem);
+    // Caso contrario: cabeca de item (codigo canonico). Uppercase para nome de coluna consistente
+    // (termos ja resolvidos vem canonicos; itens nao reconhecidos ficam em maiuscula tambem).
+    const item = t.raw.replace(/\.+$/, '').toUpperCase();
+    currentItem = item;
+    if (subsampleMode) {
+      slotCounter = 0;
+      pendingSlot = null;
+    } else {
+      ensureCol(item); // cria a coluna; valor virá a seguir (ou fica '.' se ausencia declarada).
+    }
     i++;
   }
 
@@ -121,3 +186,4 @@ export function parseTranscript(text) {
 
   return { tabela_final, columns: ['Parcela', ...columns] };
 }
+
