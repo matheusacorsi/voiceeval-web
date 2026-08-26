@@ -1,9 +1,10 @@
-const CACHE_VERSION = 'voiceeval-v6';
+const CACHE_VERSION = 'voiceeval-v7';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './css/styles.css',
+  './apple-touch-icon.png',
   './icons/icon-192.png',
   './icons/icon-512.png',
   './icons/icon-180.png',
