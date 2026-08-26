@@ -66,3 +66,44 @@ bloqueados/restritos pela TI corporativa (sem admin do tenant; gateway Zscaler o
 **Como poderia ser feito:** módulo opcional e **desligado por padrão** em `js/sync.js` (a estrutura
 já isola toda a lógica de exportação nesse arquivo), ativado só se/quando a TI liberar um registro
 de app.
+
+---
+
+## 5. Upload automático de 1 toque via Power Automate (gatilho HTTP) — lado do PWA
+
+**Ideia:** ao "Transmitir", o PWA envia o pacote automaticamente para uma **biblioteca específica
+do SharePoint** com um único toque — sem o usuário escolher pasta manualmente e **sem login Azure
+no app** (contorna o bloqueio de Graph/Azure AD da TI/Zscaler).
+
+**Como funcionaria:**
+- O usuário cria um fluxo no **Power Automate** com o gatilho **"Quando uma solicitação HTTP é
+  recebida"**, que gera uma URL de POST.
+- O fluxo recebe o pacote e usa a ação **SharePoint → Criar arquivo** para salvar na biblioteca
+  compartilhada.
+- No PWA (a parte que eu implementaria): um campo de configuração para colar a URL do fluxo + um
+  `fetch(URL, { method: 'POST', body })` no "Transmitir", com **fallback para o Web Share atual**
+  se o POST falhar.
+- Divisão de trabalho: o **usuário** cria o fluxo no Power Automate e testa o Zscaler; **eu** faço
+  só o lado do PWA.
+
+**Dois pontos a confirmar antes de implementar (lado do PWA):**
+1. **Formato do envio:** o fluxo recebe o **`.zip` inteiro (base64)** no corpo do POST, ou prefere
+   **um arquivo por vez** (Excel, áudios, fotos separados)?
+2. **URL do fluxo:** o usuário **cola a URL nas configurações do app** (recomendado — fica só no
+   aparelho dele) ou fica **fixa** no código?
+
+**Cuidados:**
+- A URL do fluxo é um **segredo** — não pode ir no código público do GitHub. Por isso o recomendado
+  é colar nas configurações (fica só no dispositivo) + o fluxo validar um **cabeçalho secreto**.
+- Precisa **testar se o Zscaler libera** o endpoint do Power Automate (`*.azure.com` /
+  `*.powerautomate.com`) — costuma liberar por ser M365, mas não é garantido.
+- Limite de tamanho da requisição (~100 MB; os zips com áudio ficam bem abaixo).
+
+**Por que está adiado:** decisão do usuário — registrado como plano futuro. Depende de o usuário
+criar o fluxo no Power Automate do lado dele. Os caminhos já prontos (Web Share no celular; pasta
+do OneDrive/SharePoint sincronizada no PC — itens já implementados em `js/sync.js`) cobrem a
+necessidade enquanto isso.
+
+**Relação com o item 4:** este (opção C) é o caminho **recomendado e viável** para upload
+automático; o item 4 (Graph/SharePoint REST direto, "opção D") exige registro de app no Azure com
+consentimento de admin, hoje bloqueado pela TI.
