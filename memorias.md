@@ -11,8 +11,7 @@ Mais recente no topo de cada seção.
 PWA em JS puro, descartando os motores de ASR (Whisper/Canary/Gemini) — a PWA já transcreve.
 Pipeline: **normalizar → resolver termos → parsear → exportar Excel + renomear fotos**.
 
-**Fase 1 (feita e validada) — fundação em `js/postprocess/`:**
-- `program_rules_dictionary.json` — dicionário real copiado da ferramenta (term_aliases +
+**Fase 1 (feita e validada) — fundação em `js/postprocess/`:**- `program_rules_dictionary.json` — dicionário real copiado da ferramenta (term_aliases +
   multilingual_terms PT/ES/EN + EPPO).
 - `normalize.js` — limpeza de texto (acentos/espaços/pontuação), equivalente ao
   `transcript_normalizer.py`.
@@ -25,9 +24,22 @@ Pipeline: **normalizar → resolver termos → parsear → exportar Excel + reno
 - **Validação (browser):** reproduz `caso_1/2/3` do `test_parser_variacoes.py` e um caso de
   resolução (`capim amargoso`→`AMARGOSO`, `buva`→`BUVA`, ausência→`.`). Todos passam.
 
-**Próximas fases:** subamostras (Davis/genérica/terço), correção por voz, exportador `.xlsx`
-(FORMATO_FINAL + LISTA_COPIAR_COLAR via `js/zip.js`), renomeio de fotos por parcela (reusando o
-vínculo foto→áudio anterior que a PWA já grava), e a tela de revisão + integração na Captura.
+**Fase 2 (feita e validada) — exportador Excel `js/postprocess/xlsx.js`:**
+- Escritor `.xlsx` (SpreadsheetML/OPC) próprio, sem dependências, reaproveitando o ZIP de
+  `js/zip.js` (um `.xlsx` é um ZIP de partes XML). Strings inline (dispensa sharedStrings/styles).
+- Aba **FORMATO_FINAL**: linha 1 = `[ensaio, data, ref_fotos]`; linha 2 = cabeçalho (célula vazia
+  sobre a coluna Parcela); 1 linha por parcela, ordenada; vazio = `.`. Colunas de subamostra
+  `<ITEM>_S01` exibidas como `<ITEM>1`.
+- Aba **LISTA_COPIAR_COLAR** (2 colunas): só aparece com exatamente 1 item de subamostra genérica
+  OU protocolo de plantas (Davis). Valores empilhados, Parcela só na 1ª linha do bloco, vazio→branco.
+- Nome do arquivo: `Avaliacao_<ensaio>_<data DD-MM-AA>_<ref fotos>.xlsx` (rótulos PT/EN/ES).
+- **Validação:** gerado no browser e **aberto com openpyxl** (mesma lib da ferramenta) — abas,
+  cabeçalhos, renomeio `_S01→1`, empilhamento vertical e células vazias conferem.
+
+**Próximas fases:** parsing de subamostras (Davis/genérica/terço) alimentando as colunas `_S01`/o
+protocolo de plantas; correção por voz; renomeio de fotos por parcela (reusando o vínculo
+foto→áudio anterior que a PWA já grava); e a tela de revisão pós-transcrição + botão de exportar,
+integrando tudo na Captura.
 
 ---
 
