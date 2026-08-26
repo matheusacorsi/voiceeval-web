@@ -5,12 +5,14 @@ import { initIdentificationScreen, onEnterIdentification } from './screens/ident
 import { initConfigScreen, onEnterConfig } from './screens/config.js';
 import { initCaptureScreen, onEnterCapture, onLeaveCapture } from './screens/capture.js';
 import { initPendingScreen, onEnterPending } from './screens/pending.js';
+import { initReviewScreen, onEnterReview } from './screens/review.js';
 
 const SCREENS = {
   inicio: { onEnter: onEnterHome },
   identificacao: { onEnter: onEnterIdentification },
   config: { onEnter: onEnterConfig },
   captura: { onEnter: onEnterCapture, onLeave: onLeaveCapture },
+  revisao: { onEnter: onEnterReview },
   pendencias: { onEnter: onEnterPending }
 };
 
@@ -100,6 +102,7 @@ function bootstrap() {
   initIdentificationScreen(navigate);
   initConfigScreen(navigate);
   initCaptureScreen(navigate);
+  initReviewScreen(navigate);
   initPendingScreen(navigate);
 
   const updateConnStatus = initConnectionStatus();

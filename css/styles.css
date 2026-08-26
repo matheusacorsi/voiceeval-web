@@ -337,3 +337,88 @@ ul.list li button {
 .modal-box .row .btn {
   margin-top: 0;
 }
+
+/* Tabela de revisao (pos-transcricao) */
+.table-scroll {
+  overflow-x: auto;
+  margin: 10px 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+table.data-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+table.data-table th,
+table.data-table td {
+  border: 1px solid #cfd8e3;
+  padding: 2px;
+  text-align: center;
+}
+
+table.data-table thead th {
+  background: #eef3fb;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+table.data-table .cell-input {
+  width: 100%;
+  min-width: 56px;
+  border: none;
+  background: transparent;
+  padding: 8px 4px;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text);
+}
+
+table.data-table .cell-input.col-head {
+  min-width: 64px;
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+table.data-table .cell-input:focus {
+  outline: 2px solid var(--primary);
+  background: #fff;
+  border-radius: 4px;
+}
+
+table.data-table .cell-parcela {
+  font-weight: 600;
+}
+
+.cell-del {
+  border: none;
+  background: transparent;
+  color: var(--danger);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 2px 6px;
+}
+
+.transcricao-box {
+  margin: 12px 0;
+  font-size: 0.85rem;
+}
+
+.transcricao-box summary {
+  cursor: pointer;
+  color: var(--primary);
+}
+
+.transcricao-pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  background: #f4f7fc;
+  border-radius: 8px;
+  padding: 10px;
+  margin: 8px 0 0;
+  max-height: 180px;
+  overflow-y: auto;
+  color: var(--muted);
+}

@@ -71,7 +71,20 @@ export const DICT = {
   status_baixando_modelo: { pt: 'Baixando modelo local ({{pct}}%)…', en: 'Downloading local model ({{pct}}%)…', es: 'Descargando modelo local ({{pct}}%)…' },
   lbl_idioma_pt: { pt: 'Português', en: 'Portuguese', es: 'Portugués' },
   lbl_idioma_en: { pt: 'Inglês', en: 'English', es: 'Inglés' },
-  lbl_idioma_es: { pt: 'Espanhol', en: 'Spanish', es: 'Español' }
+  lbl_idioma_es: { pt: 'Espanhol', en: 'Spanish', es: 'Español' },
+  btn_revisar_excel: { pt: 'Revisar dados e exportar Excel', en: 'Review data and export Excel', es: 'Revisar datos y exportar Excel' },
+  titulo_revisao: { pt: 'Revisão dos dados', en: 'Data review', es: 'Revisión de los datos' },
+  msg_revisao_vazia: { pt: 'Nenhuma parcela foi reconhecida na transcrição. Adicione linhas e colunas manualmente.', en: 'No plot was recognized in the transcription. Add rows and columns manually.', es: 'No se reconoció ninguna parcela en la transcripción. Agregue filas y columnas manualmente.' },
+  btn_add_linha: { pt: '+ Parcela', en: '+ Plot', es: '+ Parcela' },
+  btn_add_coluna: { pt: '+ Coluna', en: '+ Column', es: '+ Columna' },
+  btn_exportar_excel: { pt: 'Exportar Excel (.xlsx)', en: 'Export Excel (.xlsx)', es: 'Exportar Excel (.xlsx)' },
+  lbl_ver_transcricao: { pt: 'Ver transcrição reconhecida', en: 'View recognized transcription', es: 'Ver transcripción reconocida' },
+  lbl_coluna_parcela: { pt: 'Parcela', en: 'Plot', es: 'Parcela' },
+  msg_nome_coluna: { pt: 'Nome da coluna (ex.: BUVA, item avaliado):', en: 'Column name (e.g. BUVA, evaluated item):', es: 'Nombre de la columna (ej.: BUVA, ítem evaluado):' },
+  msg_excel_exportado: { pt: 'Planilha Excel gerada.', en: 'Excel spreadsheet generated.', es: 'Hoja de Excel generada.' },
+  msg_revisao_sem_dados: { pt: 'Adicione ao menos uma parcela antes de exportar.', en: 'Add at least one plot before exporting.', es: 'Agregue al menos una parcela antes de exportar.' },
+  aria_remover_linha: { pt: 'Remover parcela', en: 'Remove plot', es: 'Quitar parcela' },
+  aria_remover_coluna: { pt: 'Remover coluna', en: 'Remove column', es: 'Quitar columna' }
 };
 
 const SUPPORTED = ['pt', 'en', 'es'];

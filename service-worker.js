@@ -1,4 +1,4 @@
-const CACHE_VERSION = 'voiceeval-v7';
+const CACHE_VERSION = 'voiceeval-v8';
 const APP_SHELL = [
   './',
   './index.html',
@@ -24,7 +24,15 @@ const APP_SHELL = [
   './js/screens/identification.js',
   './js/screens/config.js',
   './js/screens/capture.js',
-  './js/screens/pending.js'
+  './js/screens/pending.js',
+  './js/screens/review.js',
+  './js/postprocess/normalize.js',
+  './js/postprocess/spoken_numbers.js',
+  './js/postprocess/rules.js',
+  './js/postprocess/parser.js',
+  './js/postprocess/pipeline.js',
+  './js/postprocess/xlsx.js',
+  './js/postprocess/program_rules_dictionary.json'
 ];
 
 self.addEventListener('install', (event) => {

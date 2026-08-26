@@ -18,6 +18,7 @@ const audioList = qs('#audioList');
 const btnTirarFoto = qs('#btnTirarFoto');
 const btnRemoverUltimaFoto = qs('#btnRemoverUltimaFoto');
 const btnFinalizar = qs('#btnFinalizarAvaliacao');
+const btnRevisarExcel = qs('#btnRevisarExcel');
 const btnTransmitir = qs('#btnTransmitirAvaliacao');
 const btnSalvarOffline = qs('#btnSalvarAvaliacaoOffline');
 const btnVoltar = qs('#btnVoltarCaptura');
@@ -61,6 +62,7 @@ function refreshCaptureLockState() {
   const finalized = session.status === 'finalizada';
   const emAndamento = session.audios.length > 0 || session.fotos.length > 0 || recorder.state !== 'idle';
   btnFinalizar.classList.toggle('hidden', finalized);
+  btnRevisarExcel.classList.toggle('hidden', !finalized);
   btnTransmitir.classList.toggle('hidden', !finalized);
   btnTirarFoto.disabled = finalized;
   btnRemoverUltimaFoto.disabled = finalized;
@@ -280,6 +282,10 @@ export function initCaptureScreen(navigateFn) {
     toast(t('status_avaliacao_finalizada'));
   });
 
+  btnRevisarExcel.addEventListener('click', () => {
+    navigate('revisao');
+  });
+
   btnTransmitir.addEventListener('click', async () => {
     try {
       const files = await buildExportZip();
@@ -293,7 +299,6 @@ export function initCaptureScreen(navigateFn) {
       if (!(err && err.name === 'AbortError')) toast(t('msg_erro_camera'));
     }
   });
-
   btnSalvarOffline.addEventListener('click', async () => {
     await finishCurrentClip();
     if (session.audios.length === 0 && session.fotos.length === 0) {

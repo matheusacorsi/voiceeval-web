@@ -5,6 +5,39 @@ Mais recente no topo de cada seção.
 
 ---
 
+## Tela de Revisão + Exportar Excel (integração na PWA) — feito e validado
+
+**O que:** depois de **Finalizar avaliação**, aparece o botão **"Revisar dados e exportar Excel"**
+que abre uma nova tela (`#screen-revisao`). Ela roda o pós-transcrição sobre as transcrições dos
+trechos e mostra uma **tabela editável por parcela** (uma coluna por alvo), com botões **+ Parcela**,
+**+ Coluna** e remover linha/coluna, além de um bloco recolhível **"Ver transcrição reconhecida"**.
+O botão **Exportar Excel (.xlsx)** gera a planilha e usa o mesmo fluxo de compartilhamento/download
+já existente (`js/sync.js`: Web Share → pasta local → download).
+
+**Por quê:** torna o motor de pós-transcrição utilizável ponta a ponta no celular — o avaliador
+revisa/corrige o que foi reconhecido e exporta o Excel na hora, sem depender de ferramenta externa.
+
+**Como (arquivos):**
+- `js/postprocess/pipeline.js` — junta as transcrições dos trechos (por espaço) e roda
+  normalize → resolve termos → parse. `runPipeline(texto)` e `runPipelineFromAudios(audios)`.
+- `js/screens/review.js` — `onEnterReview` monta o modelo editável a partir do parser; render de
+  tabela com inputs; +linha/+coluna; `exportEvaluationXlsx` + `exportFiles` no botão exportar.
+- `index.html` — nova `<section id="screen-revisao">` + botão `#btnRevisarExcel` na Captura.
+- `js/app.js` — rota `revisao` registrada. `js/screens/capture.js` — mostra o botão após finalizar.
+- `js/i18n.js` — textos PT/EN/ES da tela. `css/styles.css` — estilo da tabela editável.
+- `service-worker.js` — `CACHE_VERSION` → `voiceeval-v8` + `js/postprocess/*` e `review.js` no APP_SHELL.
+
+**Escopo (decisão do usuário):** pular as heurísticas de recuperação de ASR da ferramenta Python
+(dígitos fundidos, valores vazados, 2ª passada) — a PWA transcreve limpo e a revisão na tela cobre
+erros. Subamostras (Davis/genérica), correção por voz e renomeio de fotos ficam para depois.
+
+**Validação (browser, cache limpo):** navegação → tabela renderiza `Parcela 101 BUVA 10 AMARGOSO 20`
+/ `Parcela 102 BUVA 30 AMARGOSO ausente(vazio)`; +coluna/+parcela funcionam; correção de bug do
+parser (token "." solto entre trechos virava coluna vazia → agora ignorado); botão Exportar gera o
+`.xlsx` e dispara o fluxo de compartilhamento (toast "Planilha Excel gerada.").
+
+---
+
 ## Pós-transcrição (porte da ferramenta Python → PWA) — em andamento
 
 **Objetivo:** portar o pós-transcrição da ferramenta `2voice_eval_tool` (Python/Streamlit) para a

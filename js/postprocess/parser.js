@@ -56,6 +56,9 @@ export function parseTranscript(text) {
   while (i < tokens.length) {
     const t = tokens[i];
 
+    // Pontuacao solta / token vazio (ex.: "." separando trechos) — nunca vira item nem valor.
+    if (t.norm === '') { i++; continue; }
+
     // Marcador de parcela -> abre novo bloco.
     if (PARCEL_KEYWORDS.has(t.norm)) {
       let j = i + 1;
