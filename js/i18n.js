@@ -72,6 +72,8 @@ export const DICT = {
   lbl_idioma_pt: { pt: 'Português', en: 'Portuguese', es: 'Portugués' },
   lbl_idioma_en: { pt: 'Inglês', en: 'English', es: 'Inglés' },
   lbl_idioma_es: { pt: 'Espanhol', en: 'Spanish', es: 'Español' },
+  btn_continuar_rascunho: { pt: 'Continuar avaliação em andamento', en: 'Resume evaluation in progress', es: 'Continuar evaluación en curso' },
+  msg_gravacao_interrompida: { pt: 'Gravação interrompida (ligação ou app em segundo plano). O trecho foi salvo — toque no microfone para continuar.', en: 'Recording interrupted (call or app in background). The clip was saved — tap the microphone to continue.', es: 'Grabación interrumpida (llamada o app en segundo plano). El fragmento se guardó — toque el micrófono para continuar.' },
   btn_revisar_excel: { pt: 'Revisar dados e exportar', en: 'Review data and export', es: 'Revisar datos y exportar' },
   titulo_revisao: { pt: 'Revisão dos dados', en: 'Data review', es: 'Revisión de los datos' },
   msg_revisao_vazia: { pt: 'Nenhuma parcela foi reconhecida na transcrição. Adicione linhas e colunas manualmente.', en: 'No plot was recognized in the transcription. Add rows and columns manually.', es: 'No se reconoció ninguna parcela en la transcripción. Agregue filas y columnas manualmente.' },

@@ -32,7 +32,7 @@ function renderList() {
 }
 
 async function reload() {
-  pendingCache = await getAllPendingEvaluations();
+  pendingCache = (await getAllPendingEvaluations()).filter((p) => p.status !== 'rascunho');
   if (!pendingCache.some((p) => p.sessionId === selectedId)) selectedId = null;
   renderList();
 }
