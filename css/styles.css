@@ -455,6 +455,30 @@ table.data-table tr.row-perdida .cell-input { color: var(--muted); text-decorati
   margin: 8px 0;
 }
 
+/* Modo bolso: overlay preto (OLED ~= pixels desligados) + trava de toque; a gravacao continua. */
+.pocket-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: #000;
+  color: #eaeaea;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.pocket-inner { text-align: center; padding: 24px; }
+.pocket-rec { display: flex; align-items: center; gap: 10px; justify-content: center; font-size: 1rem; color: #bdbdbd; }
+.pocket-dot { width: 12px; height: 12px; border-radius: 50%; background: #e53935; animation: pocketPulse 2s ease-in-out infinite; }
+@keyframes pocketPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
+.pocket-timer { font-size: 2.4rem; font-variant-numeric: tabular-nums; margin: 16px 0 28px; color: #f2f2f2; }
+.pocket-unlock { position: relative; overflow: hidden; border: 1px solid #444; background: #111; color: #ddd; border-radius: 999px; padding: 14px 26px; font-size: 0.95rem; cursor: pointer; }
+.pocket-unlock-fill { position: absolute; left: 0; top: 0; bottom: 0; width: 0%; background: #2b6b2b; z-index: 0; transition: width 60ms linear; }
+.pocket-unlock-label { position: relative; z-index: 1; }
+.pocket-hint { margin-top: 22px; font-size: 0.8rem; color: #777; max-width: 280px; }
+
 .transcricao-box {
   margin: 12px 0;
   font-size: 0.85rem;

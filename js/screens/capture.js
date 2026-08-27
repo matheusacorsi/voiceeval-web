@@ -1,4 +1,4 @@
-import { qs, toast, formatDuration, formatBytes } from '../utils.js';
+import { qs, toast, formatDuration, formatBytes, uuid } from '../utils.js';
 import { t, getLang } from '../i18n.js';
 import { session, addAudio, removeAudio, addFoto, removeFoto, resetSession } from '../state.js';
 import { AudioRecorderController } from '../recorder.js';
@@ -25,6 +25,8 @@ const btnConcluirTrecho = qs('#btnConcluirTrecho');
 const selIdiomaFala = qs('#selIdiomaFala');
 const selModoTranscricao = qs('#selModoTranscricao');
 const statusTranscricao = qs('#statusTranscricao');
+const btnImportarAudio = qs('#btnImportarAudio');
+const inputImportarAudio = qs('#inputImportarAudio');
 
 let navigate = null;
 let cloudTranscriber = null;
@@ -156,6 +158,37 @@ function onRecorderInterrupt(clip) {
   processClip(clip).catch(() => {}).finally(() => toast(t('msg_gravacao_interrompida')));
 }
 
+// Duracao de um arquivo de audio (metadados), sem decodificar o audio inteiro.
+function audioDuration(url) {
+  return new Promise((resolve) => {
+    const a = new Audio();
+    a.preload = 'metadata';
+    a.onloadedmetadata = () => resolve(Number.isFinite(a.duration) ? a.duration : 0);
+    a.onerror = () => resolve(0);
+    a.src = url;
+  });
+}
+
+// Importa uma gravacao feita no app de voz nativo (que grava com a tela bloqueada) como um trecho.
+// Audio de arquivo so pode ser transcrito localmente (Whisper): a nuvem/Web Speech e ao vivo.
+async function handleImportAudio(file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const duracaoS = await audioDuration(url);
+  URL.revokeObjectURL(url);
+  const now = new Date().toISOString();
+  const clip = { id: uuid(), blob: file, mime: file.type || 'audio/mp4', tsInicio: now, tsFim: now, duracaoS, bytes: file.size };
+  const desativada = session.modoTranscricao === 'desativada';
+  clip.transcript = '';
+  clip.transcricaoStatus = desativada ? 'desativada' : 'processando';
+  addAudio(clip);
+  await saveAudioDraft(clip);
+  renderAudioList();
+  if (!desativada) scheduleLocalTranscription(clip); // arquivo -> sempre transcricao local
+  updateTranscricaoIndicator();
+  toast(t('msg_audio_importado'));
+}
+
 // App foi para segundo plano enquanto gravava (ligacao, troca de app, tela bloqueada): conclui e
 // salva o trecho atual para nao perder o audio caso o SO encerre a aba.
 function handleBackgroundInterruption() {
@@ -281,6 +314,17 @@ export function initCaptureScreen(navigateFn) {
 
   btnConcluirTrecho.addEventListener('click', async () => {
     await finishCurrentClip();
+  });
+
+  btnImportarAudio.addEventListener('click', () => inputImportarAudio.click());
+  inputImportarAudio.addEventListener('change', async () => {
+    const file = inputImportarAudio.files && inputImportarAudio.files[0];
+    inputImportarAudio.value = '';
+    try {
+      await handleImportAudio(file);
+    } catch {
+      toast(t('msg_erro_importar_audio'));
+    }
   });
 
   audioList.addEventListener('click', async (e) => {

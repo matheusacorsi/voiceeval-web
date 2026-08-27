@@ -16,6 +16,8 @@ export class AudioRecorderController {
     this._pendingStop = null; // resolve() de stopAndGetClip aguardando
     this._finalized = false;
     this._interrupted = false;
+    this._wakeLock = null;
+    this._onVisibility = () => this._maybeReacquireWakeLock();
   }
 
   async start() {
@@ -43,6 +45,10 @@ export class AudioRecorderController {
 
     this.recorder.start();
     this.state = 'recording';
+    // Mantem a tela ligada durante a gravacao: sem isso o SO auto-bloqueia, suspende a pagina e o
+    // microfone para (o audio morre com o celular no bolso). Best-effort (feature-detect).
+    this._acquireWakeLock();
+    document.addEventListener('visibilitychange', this._onVisibility);
     this.onStatusChange(this.state);
   }
 
@@ -97,6 +103,7 @@ export class AudioRecorderController {
     const clip = { id: uuid(), blob, mime, tsInicio: this.tsInicio, tsFim, duracaoS, bytes: blob.size };
 
     this._releaseStream();
+    this._releaseWakeLock();
     this.state = 'idle';
     this.onStatusChange(this.state);
 
@@ -114,6 +121,7 @@ export class AudioRecorderController {
       try { this.recorder.stop(); } catch { /* noop */ }
     }
     this._releaseStream();
+    this._releaseWakeLock();
     this._pendingStop = null;
     this._interrupted = false;
     this.state = 'idle';
@@ -124,6 +132,30 @@ export class AudioRecorderController {
     if (this._track) { this._track.onended = null; this._track.onmute = null; this._track = null; }
     if (this.stream) this.stream.getTracks().forEach((track) => track.stop());
     this.stream = null;
+  }
+
+  async _acquireWakeLock() {
+    try {
+      if ('wakeLock' in navigator && document.visibilityState === 'visible') {
+        this._wakeLock = await navigator.wakeLock.request('screen');
+        this._wakeLock.addEventListener('release', () => { this._wakeLock = null; });
+      }
+    } catch { this._wakeLock = null; }
+  }
+
+  // O wake lock e liberado pelo SO quando a pagina fica oculta; ao voltar visivel, re-adquire se
+  // ainda estiver gravando.
+  _maybeReacquireWakeLock() {
+    if (document.visibilityState === 'visible' && this.state !== 'idle' && !this._wakeLock) {
+      this._acquireWakeLock();
+    }
+  }
+
+  _releaseWakeLock() {
+    document.removeEventListener('visibilitychange', this._onVisibility);
+    const wl = this._wakeLock;
+    this._wakeLock = null;
+    if (wl) { try { wl.release(); } catch { /* noop */ } }
   }
 
   _pickMimeType() {

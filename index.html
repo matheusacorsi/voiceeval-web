@@ -167,6 +167,13 @@
         <button id="micButton" class="mic-button" aria-label="microfone">&#127908;</button>
         <p id="statusGravacao" class="status-text" data-i18n="status_audio_inicio">Toque no microfone para iniciar a gravacao.</p>
         <button type="button" id="btnConcluirTrecho" class="btn secondary hidden" data-i18n="btn_concluir_trecho">Concluir trecho de audio</button>
+        <button type="button" id="btnModoBolso" class="btn secondary hidden" data-i18n="btn_modo_bolso">Modo bolso (tela travada)</button>
+      </div>
+
+      <div class="import-row">
+        <input type="file" id="inputImportarAudio" accept="audio/*" class="hidden" />
+        <button type="button" id="btnImportarAudio" class="btn secondary" data-i18n="btn_importar_audio">Importar audio gravado no celular</button>
+        <p class="muted" data-i18n="hint_importar_audio">Grave no app de voz do celular (continua com a tela bloqueada) e importe o arquivo aqui.</p>
       </div>
 
       <div class="counters">
@@ -186,6 +193,19 @@
       <button type="button" id="btnVoltarCaptura" class="btn secondary" data-i18n="btn_voltar">Voltar</button>
     </div>
   </section>
+
+  <!-- Overlay: Modo bolso (tela preta p/ poupar bateria em OLED + trava de toque; gravacao continua) -->
+  <div id="pocketOverlay" class="pocket-overlay hidden" aria-hidden="true">
+    <div class="pocket-inner">
+      <div class="pocket-rec"><span class="pocket-dot"></span> <span data-i18n="pocket_gravando">Gravando</span></div>
+      <div id="pocketTimer" class="pocket-timer">00:00</div>
+      <button type="button" id="pocketUnlock" class="pocket-unlock">
+        <span class="pocket-unlock-fill"></span>
+        <span class="pocket-unlock-label" data-i18n="pocket_segure_destravar">Segure para destravar</span>
+      </button>
+      <p class="pocket-hint" data-i18n="pocket_hint">Tela travada. A gravacao continua no bolso.</p>
+    </div>
+  </div>
 
   <!-- Tela: Pendencias -->
   <section id="screen-pendencias" class="screen hidden">
